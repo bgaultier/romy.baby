@@ -1,0 +1,10 @@
+*.pyc
+node_modules/
+_build/
+dev.db
+site_media/
+.DS_Store
+*.sqlite3
+*.egg-info
+.coverage
+coverage.xml
