@@ -38,16 +38,17 @@ class Baby(models.Model):
 class Activity(models.Model):
     baby = models.ForeignKey(Baby, on_delete=models.CASCADE)
     EVENT_TYPES = (
-        ('BOTT', _(u'Biberon')),
-        ('FEED', _(u'Manger')),
-        ('DIAP', _(u'Couche')),
-        ('SLEE', _(u'Dodo')),
+        ('BOTTLE', _(u'Biberon')),
+        ('BATH', _(u'Bain')),
+        ('PEE', _(u'Pipi')),
+        ('POOH', _(u'Popo')),
+        ('SLEEP', _(u'Dodo')),
     )
-    type = models.CharField(max_length=4, help_text=_("Veuillez indiquer le type de l'activité"), choices=EVENT_TYPES)
-    quantity = models.PositiveSmallIntegerField(_("Quantité"), help_text=_("Veuillez indiquer la quantité souhaitée"), default=None, null=True, blank=True)
+    type = models.CharField(max_length=6, help_text=_("Veuillez indiquer le type de l'activité"), choices=EVENT_TYPES)
+    quantity = models.PositiveSmallIntegerField(_("Quantité"), help_text=_("Veuillez indiquer la quantité de lait bue par bébé"), default=None, null=True, blank=True)
     comment = models.TextField(_("Commentaire"), max_length=1024, blank=True)
 
-    created_date = models.DateTimeField(_('Date de création'), auto_now_add=True)
+    created_date = models.DateTimeField(_('Date de création'))
     last_connection = models.GenericIPAddressField(_('Dernière connexion'), protocol='both', unpack_ipv4=False, default=None, blank=True, null=True)
 
     def __str__(self):
@@ -61,3 +62,4 @@ class Activity(models.Model):
     class Meta:
         verbose_name = _('Activité')
         verbose_name_plural = _('Activités')
+        ordering = ['-created_date']

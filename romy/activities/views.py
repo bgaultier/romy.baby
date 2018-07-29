@@ -1,7 +1,11 @@
-from django.shortcuts import render
-
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.utils import timezone
+
+from datetime import timedelta
 
 from .models import Baby, Activity
 
@@ -11,5 +15,216 @@ class IndexView(generic.ListView):
     template_name = 'index.html'
 
     def get_queryset(self):
+        babies = Baby.objects.filter(parent=self.request.user)
+        return babies
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        babies = self.get_queryset()
+        babies_list = []
+        for baby in babies:
+            activities = Activity.objects.filter(baby=baby)
+            night_activities = Activity.objects.filter(baby=baby, created_date__hour__lt=8)
+            bottles_today = activities.filter(type='BOTTLE', created_date__gt=timezone.now().replace(hour=0, minute=0))
+            night_bottles = bottles_today.filter(created_date__hour__lt=8)
+            day_bottles = len(bottles_today) - len(night_bottles)
+            diapers_today = activities.filter(type__startswith='P', created_date__gt=timezone.now().replace(hour=0, minute=0))
+            night_diapers = diapers_today.filter(created_date__hour__lt=8)
+            day_diapers = len(diapers_today) - len(night_diapers)
+            bath = activities.filter(type='BATH', created_date__gt=timezone.now().replace(hour=0, minute=0))
+            try:
+                next_bottle = bottles_today.first().created_date + timedelta(minutes=baby.feeding_period)
+                last_diaper = diapers_today.first().created_date
+                last_bath = activities.filter(type='BATH').first().created_date
+            except AttributeError:
+                next_bottle = None
+                last_diaper = None
+                last_bath = None
+            babies_list.append({
+                'first_name':baby.first_name,
+                'id':baby.id,
+                'activities':activities[:5],
+                'night_activities':night_activities,
+                'bottles': {
+                    'today':bottles_today,
+                    'night':night_bottles,
+                    'day':day_bottles,
+                    'next':next_bottle,
+                },
+                'diapers': {
+                    'today':diapers_today,
+                    'night':night_diapers,
+                    'day':day_diapers,
+                    'last':last_diaper,
+                },
+                'bath': {
+                    'today':bath,
+                    'last':last_bath,
+                },
+            })
+        context['babies'] = babies_list
+        return context
+
+class BabyUpdateView(generic.UpdateView):
+    model = Baby
+    success_url = reverse_lazy('activities:index')
+    fields = ('first_name', 'feeding_period')
+
+class ActivityDeleteView(generic.DeleteView):
+    model = Activity
+    success_url = reverse_lazy('activities:index')
+
+    def get_queryset(self):
         baby = get_object_or_404(Baby, parent=self.request.user)
-        return baby
+        qs = super(ActivityDeleteView, self).get_queryset()
+        return qs.filter(baby=baby)
+
+class ActivitiesListView(generic.ListView):
+    model = Activity
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        babies = Baby.objects.filter(parent=self.request.user)
+        babies_list = []
+        for baby in babies:
+            activities = Activity.objects.filter(baby=baby)
+            night_activities = Activity.objects.filter(baby=baby, created_date__hour__lt=8)
+            babies_list.append({
+                'first_name':baby.first_name,
+                'id':baby.id,
+                'activities':activities,
+            })
+        context['babies'] = babies_list
+        return context
+
+class BottleActivityCreateView(generic.CreateView):
+    model = Activity
+    fields = ('quantity', 'comment')
+    success_url = reverse_lazy('activities:list')
+
+    def form_valid(self, form):
+        baby = get_object_or_404(Baby, parent=self.request.user)
+        form.instance.baby = baby
+        form.instance.created_date = timezone.now()
+        form.instance.type = 'BOTTLE'
+        return super().form_valid(form)
+
+class PeeActivityCreateView(generic.CreateView):
+    model = Activity
+    fields = ['comment']
+    success_url = reverse_lazy('activities:list')
+
+    def form_valid(self, form):
+        baby = get_object_or_404(Baby, parent=self.request.user)
+        form.instance.baby = baby
+        form.instance.created_date = timezone.now()
+        form.instance.type = 'PEE'
+        return super().form_valid(form)
+
+class PoohActivityCreateView(generic.CreateView):
+    model = Activity
+    fields = ['comment']
+    success_url = reverse_lazy('activities:list')
+
+    def form_valid(self, form):
+        print(self)
+        baby = get_object_or_404(Baby, parent=self.request.user)
+        form.instance.baby = baby
+        form.instance.created_date = timezone.now()
+        form.instance.type = 'POOH'
+        return super().form_valid(form)
+
+class BathActivityCreateView(generic.CreateView):
+    model = Activity
+    fields = ['comment']
+    success_url = reverse_lazy('activities:list')
+
+    def form_valid(self, form):
+        baby = get_object_or_404(Baby, parent=self.request.user)
+        form.instance.baby = baby
+        form.instance.created_date = timezone.now()
+        form.instance.type = 'BATH'
+        return super().form_valid(form)
+
+@csrf_exempt
+def bottle(request, pk):
+    baby = get_object_or_404(Baby, pk=pk, api_key=request.GET.get('key'))
+    activity = Activity(baby=baby, created_date=timezone.now(), type='BOTTLE')
+    activity.save()
+
+    activities = Activity.objects.filter(baby=baby)
+    bottles_today = activities.filter(type='BOTTLE', created_date__gt=timezone.now().replace(hour=0, minute=0))
+    night_bottles = bottles_today.filter(created_date__hour__lt=8)
+    day_bottles = len(bottles_today) - len(night_bottles)
+    try:
+        next_bottle = bottles_today.first().created_date + timedelta(minutes=baby.feeding_period)
+    except AttributeError:
+        next_bottle = None
+    return JsonResponse({
+        'baby':baby.first_name,
+        'bottles': {
+            'today':len(bottles_today),
+            'night':len(night_bottles),
+            'day':day_bottles,
+            'next':next_bottle,
+        },
+    })
+
+@csrf_exempt
+def pee(request, pk):
+    baby = get_object_or_404(Baby, pk=pk, api_key=request.GET.get('key'))
+    activity = Activity(baby=baby, created_date=timezone.now(), type='PEE')
+    activity.save()
+
+    activities = Activity.objects.filter(baby=baby)
+    diapers_today = activities.filter(type__startswith='P', created_date__gt=timezone.now().replace(hour=0, minute=0))
+    night_diapers = diapers_today.filter(created_date__hour__lt=8)
+    day_diapers = len(diapers_today) - len(night_diapers)
+    try:
+        last_diaper = diapers_today.first().created_date
+    except AttributeError:
+        last_diaper = None
+    return JsonResponse({
+        'baby':baby.first_name,
+        'diapers': {
+            'today':diapers_today,
+            'night':night_diapers,
+            'day':day_diapers,
+            'last':last_diaper,
+        }
+    })
+
+@csrf_exempt
+def pooh(request, pk):
+    baby = get_object_or_404(Baby, pk=pk, api_key=request.GET.get('key'))
+    activity = Activity(baby=baby, created_date=timezone.now(), type='POOH')
+    activity.save()
+
+    activities = Activity.objects.filter(baby=baby)
+    diapers_today = activities.filter(type__startswith='P', created_date__gt=timezone.now().replace(hour=0, minute=0))
+    night_diapers = diapers_today.filter(created_date__hour__lt=8)
+    day_diapers = len(diapers_today) - len(night_diapers)
+    try:
+        last_diaper = diapers_today.first().created_date
+    except AttributeError:
+        last_diaper = None
+    return JsonResponse({
+        'baby':baby.first_name,
+        'diapers': {
+            'today':diapers_today,
+            'night':night_diapers,
+            'day':day_diapers,
+            'last':last_diaper,
+        }
+    })
+
+@csrf_exempt
+def bath(request, pk):
+    baby = get_object_or_404(Baby, pk=pk, api_key=request.GET.get('key'))
+    activity = Activity(baby=baby, created_date=timezone.now(), type='BATH')
+    activity.save()
+    try:
+        last_bath = activities.filter(type='BATH').first().created_date
+    except AttributeError:
+        last_bath = None
+    return JsonResponse({'baby':baby.first_name})

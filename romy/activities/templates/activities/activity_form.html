@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block baby_active %} active{% endblock %}
+
+{% block main %}
+<div class="card mt-3 mb-3">
+    <h3 class="card-header">{% trans "Modifier l'activité" %} {{ object }}</h3>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -2,7 +2,114 @@
 {% load staticfiles %}
 {% load bootstrap4 %}
 {% load i18n %}
+{% load humanize %}
 
 {% block scripts %}
-    {% bootstrap_javascript jquery %}
+	{% bootstrap_javascript jquery %}
+{% endblock %}
+
+{% block baby_active %} active{% endblock %}
+
+
+{% block main %}
+{% if babies %}
+	<div class="container mt-3">
+	{% for baby in babies %}
+		<h2>{{ baby.first_name }} <a href="{% url 'activities:baby_update' baby.id %}" type="button" class="btn btn-sm btn-outline-primary btn-h2"><i class="fas fa-cog"></i></a></h2>
+		<hr>
+		<div class="card-deck mb-3 mt-3 text-center">
+			<div class="card col-4 text-white bg-primary">
+                <div class="card-body">
+					<div class="row align-items-center">
+						<div class="col-3">
+							<img src="{% static "img/bottle.svg" %}" alt="Logo" height=56 />
+						</div>
+						<div class="col-3">
+							<h1>{{ baby.bottles.today|length }}</h1>
+						</div>
+						<div class="col-6 caption">
+							<div class="row caption text-left">
+								<small class="col">{{ baby.bottles.day }} {% trans "journée" %}</small>
+								<small class="col">{{ baby.bottles.night|length }} {% trans "nuit" %}</small>
+							</div>
+						</div>
+					</div>
+					<small>{% trans "Prochain biberon :" %} {{ baby.bottles.next|time }}</small>
+				</div>
+			</div>
+			<div class="card col-4 text-white bg-warning">
+                <div class="card-body">
+					<div class="row align-items-center">
+						<div class="col-4">
+							<img src="{% static "img/diaper.svg" %}" alt="Logo" height=48 />
+						</div>
+						<div class="col-2">
+							<h1>{{ baby.diapers.today|length }}</h1>
+						</div>
+						<div class="row col-7 caption text-left">
+							<small class="col">{{ baby.diapers.day }} {% trans "journée" %}</small>
+							<small class="col">{{ baby.diapers.night|length }} {% trans "nuit" %}</small>
+						</div>
+					</div>
+					{% if baby.diapers.last %}<small>{% trans "Dernier change :" %} {{ baby.diapers.last|time }}</small>{% endif %}
+				</div>
+			</div>
+			<div class="card col-4 text-white bg-info">
+                <div class="card-body">
+					<div class="row align-items-center">
+						<div class="col-4">
+							<img src="{% static "img/bath.svg" %}" alt="Logo" height=56 />
+						</div>
+						<div class="col-8">
+							<h1>{% if baby.bath.today %}oui{% else %}non{% endif %}</h1>
+						</div>
+					</div>
+					<small class="text-center">{% trans "Dernier bain :" %} {{ baby.bath.last|naturalday }}</small>
+				</div>
+			</div>
+			<div class="card col-4 bg-light">
+                <div class="card-body">
+					<div class="row align-items-center">
+						<div class="col-4">
+							<img src="{% static "img/crying.svg" %}" alt="Logo" height=72 style="margin-top:-8px" />
+						</div>
+						<div class="col-8">
+							<h1>{{ baby.night_activities|length }}</h1>
+						</div>
+					</div>
+					<small class="text-center">{% trans "La nuit dernière" %}</small>
+				</div>
+			</div>
+		</div>
+		{% if baby.activities %}
+		<table class="table table-hover" style="margin-top: 64px">
+			<thead>
+				<tr>
+					<th scope="col">{% trans "Date" %}</th>
+					<th scope="col">{% trans "Type" %}</th>
+					<th scope="col">{% trans "Commentaire" %}</th>
+					<th scope="col">{% trans "Quantité" %}</th>
+					<th scope="col">{% trans "Actions" %}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for activity in baby.activities %}
+				<tr>
+					<th scope="row">{{ activity.created_date|naturalday }} {% trans "à" %} {{ activity.created_date|time }}</th>
+					<td style="color: #{% if activity.type == 'BOTTLE' %}78C2AD{% elif activity.type == 'BATH' %}6CC3D5{% elif activity.type == 'PEE' %}FFCE67{% elif activity.type == 'POOH' %}bd9476{% elif activity.type == 'SLEE' %}#d9dadb{% endif %};"><i class="fa fa-circle"></i></td>
+					<td>{{ activity.comment }}</td>
+					<td>{% if activity.quantity %}{{ activity.quantity }}{% trans "ml" %}{% endif %}</td>
+					<td>
+						<a href="activities/{{ activity.type|lower }}/" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
+						<a href="{% url 'activities:delete' activity.baby.id activity.id %}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+                    </td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+	{% endfor %}
+	</div>
+{% else %}
+{% endif %}
 {% endblock %}

@@ -10,8 +10,8 @@ admin.site.register(Baby, BabyAdmin)
 
 
 class ActivityAdmin(admin.ModelAdmin):
-    readonly_fields = ('created_date', 'last_connection')
-    list_display = ('id', 'baby', 'type', 'created_date')
+    readonly_fields = ['last_connection']
+    list_display = ('id', 'baby', 'type', 'comment', 'created_date')
 
     search_fields = ['parent']
 

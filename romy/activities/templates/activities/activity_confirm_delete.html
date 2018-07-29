@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block baby_active %} active{% endblock %}
+
+{% block main %}
+<div class="jumbotron mt-3">
+    <h2 class="display-3">{% trans "Attention !" %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <p class="lead">
+            {% trans "Êtes vous sûr de vouloir supprimer cette activité ? (cette action ne peut être annulée)" %}
+        </p>
+        <button type="submit" class="btn btn-danger">{% trans "Supprimer" %}</button>
+    </form>
+</div>
+{% endblock %}
