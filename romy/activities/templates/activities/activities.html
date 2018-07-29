@@ -1,0 +1,32 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load humanize %}
+
+{% if baby.activities %}
+<table class="table table-hover" style="margin-top: 64px">
+    <thead>
+        <tr>
+            <th scope="col">{% trans "Date" %}</th>
+            <th scope="col">{% trans "Type" %}</th>
+            <th scope="col">{% trans "Commentaire" %}</th>
+            <th scope="col">{% trans "Quantité" %}</th>
+            <th scope="col">{% trans "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for activity in baby.activities %}
+        <tr>
+            <th scope="row">{{ activity.created_date|naturalday }} {% trans "à" %} {{ activity.created_date|time }}</th>
+            <td style="color: #{% if activity.type == 'BOTTLE' %}78C2AD{% elif activity.type == 'BATH' %}6CC3D5{% elif activity.type == 'PEE' %}FFCE67{% elif activity.type == 'POOH' %}bd9476{% elif activity.type == 'SLEE' %}#d9dadb{% endif %};"><i class="fa fa-circle"></i></td>
+            <td>{{ activity.comment }}</td>
+            <td>{% if activity.quantity %}{{ activity.quantity }}{% trans "ml" %}{% endif %}</td>
+            <td>
+                <a href="{% if activity.type == 'BOTTLE' %}{% url 'activities:bottle_update' activity.id %}{% else %}{% url 'activities:update' activity.id %}{% endif %}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
+                <a href="{% url 'activities:delete' activity.baby.id activity.id %}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'activities:csv_view' baby.id %}" type="button" class="btn btn-outline-info float-right mt-3" style="margin-bottom:96px;"><i class="fas fa-file-download"></i> {% trans "Télécharger au format .csv" %}</a>
+{% endif %}

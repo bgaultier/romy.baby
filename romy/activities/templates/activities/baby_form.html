@@ -11,6 +11,15 @@
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
+            <div class="form-group">
+                <label for="id_api_key">{% trans "Clé d'API" %}</label>
+                <div class="input-group">
+                    <input readonly name="api_key" type="text" class="form-control" value="{{ object.api_key}}">
+                    <div class="input-group-append">
+                        <a href="{% url 'activities:generate_apikey' object.id %}" class="btn btn-outline-primary" type="button"><i class="fas fa-sync-alt"></i></a>
+                    </div>
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
         </form>
     </div>
