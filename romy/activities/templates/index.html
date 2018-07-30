@@ -18,7 +18,7 @@
     <h2>{{ baby.first_name }} <a href="{% url 'activities:baby_update' baby.id %}" type="button" class="btn btn-sm btn-outline-primary btn-h2"><i class="fas fa-cog"></i></a></h2>
     <hr>
     <div class="card-deck mb-3 mt-3 text-center">
-        <div class="card col-4 text-white bg-primary">
+        <div class="card col-sm-4 text-white bg-primary">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-3">
@@ -37,7 +37,7 @@
                 <small>{% trans "Prochain biberon :" %} {{ baby.bottles.next|time }}</small>
             </div>
         </div>
-        <div class="card col-4 text-white bg-warning">
+        <div class="card col-sm-4 text-white bg-warning">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-4">
@@ -54,7 +54,7 @@
                 {% if baby.diapers.last %}<small>{% trans "Dernier change :" %} {{ baby.diapers.last|time }}</small>{% endif %}
             </div>
         </div>
-        <div class="card col-4 text-white bg-info">
+        <div class="card col-sm-4 text-white bg-info">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-4">
@@ -67,7 +67,7 @@
                 <small class="text-center">{% trans "Dernier bain :" %} {{ baby.bath.last|naturalday }}</small>
             </div>
         </div>
-        <div class="card col-4 bg-light">
+        <div class="card col-sm-4 bg-light">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-4">
