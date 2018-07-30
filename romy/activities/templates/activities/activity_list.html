@@ -29,7 +29,7 @@
 								<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<form method="post" action="bottle/">
+							<form method="post" action="{% url 'activities:bottle_create' %}">
 								<div class="modal-body">
 						            {% csrf_token %}
 					            	<div class="form-group">
@@ -61,7 +61,7 @@
 								<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<form method="post" action="pee/">
+							<form method="post" action="{% url 'activities:pee' %}">
 								<div class="modal-body">
 						            {% csrf_token %}
 									<div class="form-group">
@@ -88,7 +88,7 @@
 								<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<form method="post" action="pooh/">
+							<form method="post" action="{% url 'activities:pooh' %}">
 								<div class="modal-body">
 						            {% csrf_token %}
 									<div class="form-group">
@@ -115,7 +115,7 @@
 								<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<form method="post" action="bath/">
+							<form method="post" action="{% url 'activities:bath' %}">
 								<div class="modal-body">
 						            {% csrf_token %}
 									<div class="form-group">
