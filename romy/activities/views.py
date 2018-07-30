@@ -27,7 +27,7 @@ class IndexView(generic.ListView):
         babies_list = []
         for baby in babies:
             activities = Activity.objects.filter(baby=baby)
-            night_activities = Activity.objects.filter(baby=baby, created_date__hour__lt=timezone.now().replace(hour=8, minute=0))
+            night_activities = Activity.objects.filter(baby=baby, created_date__hour__lt=8, created_date__gt=timezone.now().replace(hour=0, minute=0))
             bottles_today = activities.filter(type='BOTTLE', created_date__gt=timezone.now().replace(hour=0, minute=0))
             night_bottles = bottles_today.filter(created_date__hour__lt=8)
             day_bottles = len(bottles_today) - len(night_bottles)
