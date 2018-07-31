@@ -107,6 +107,30 @@ class ActivitiesListView(generic.ListView):
         context['babies'] = babies_list
         return context
 
+@csrf_exempt
+def activities_api_view(request, pk):
+    baby = get_object_or_404(Baby, pk=pk, api_key=request.GET.get('key'))
+    activities = Activity.objects.filter(baby=baby)
+    bottles_today = activities.filter(type='BOTTLE', created_date__gt=timezone.now().replace(hour=0, minute=0))
+    diapers_today = activities.filter(type__startswith='P', created_date__gt=timezone.now().replace(hour=0, minute=0))
+    bath = activities.filter(type='BATH', created_date__gt=timezone.now().replace(hour=0, minute=0))
+    try:
+        next_bottle = bottles_today.first().created_date + timedelta(minutes=baby.feeding_period)
+    except AttributeError:
+        next_bottle = None
+    response={
+        'id':baby.id,
+        'first_name':baby.first_name,
+        'activities':len(activities.filter(created_date__gt=timezone.now().replace(hour=0, minute=0))),
+        'bottles': {
+            'today':len(bottles_today),
+            'next':next_bottle,
+        },
+        'diapers':len(diapers_today),
+        'bath':len(bath)
+    }
+    return JsonResponse(response)
+
 def activities_csv_view(request, pk):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="activities.csv"'
