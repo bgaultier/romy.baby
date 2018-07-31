@@ -125,6 +125,7 @@ def activities_api_view(request, pk):
         'bottles': {
             'today':len(bottles_today),
             'next':next_bottle,
+            'next_time':str(next_bottle.created_date.hour) + ':' + str(next_bottle.created_date.minute),
         },
         'diapers':len(diapers_today),
         'bath':len(bath)
