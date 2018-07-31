@@ -116,6 +116,7 @@ def activities_api_view(request, pk):
     bath = activities.filter(type='BATH', created_date__gt=timezone.now().replace(hour=0, minute=0))
     try:
         next_bottle = bottles_today.first().created_date + timedelta(minutes=baby.feeding_period)
+        next_bottle = next_bottle.astimezone(timezone.get_current_timezone())
     except AttributeError:
         next_bottle = None
     response={
@@ -125,7 +126,7 @@ def activities_api_view(request, pk):
         'bottles': {
             'today':len(bottles_today),
             'next':next_bottle,
-            'next_time':str(next_bottle.hour) + ':' + str(next_bottle.minute),
+            'next_time':next_bottle.strftime("%H:%M")
         },
         'diapers':len(diapers_today),
         'bath':len(bath)
