@@ -45,7 +45,7 @@ class Activity(models.Model):
         ('SLEEP', _(u'Dodo')),
     )
     type = models.CharField(max_length=6, help_text=_("Veuillez indiquer le type de l'activité"), choices=EVENT_TYPES)
-    quantity = models.PositiveSmallIntegerField(_("Quantité"), help_text=_("Veuillez indiquer la quantité de lait bue par bébé"), default=None, null=True, blank=True)
+    quantity = models.PositiveSmallIntegerField(_("Quantité"), help_text=_("Veuillez indiquer la quantité de lait bu par bébé"), default=None, null=True, blank=True)
     comment = models.TextField(_("Commentaire"), max_length=1024, blank=True)
 
     created_date = models.DateTimeField(_('Date de création'))

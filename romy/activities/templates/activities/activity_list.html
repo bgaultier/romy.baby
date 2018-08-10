@@ -4,138 +4,146 @@
 {% load i18n %}
 {% load humanize %}
 
-{% block scripts %}
-	{% bootstrap_javascript jquery %}
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'activities:index' %}">{% trans "Bébés" %}</a></li>
+<li class="breadcrumb-item active">{% trans "Activités" %}</li>
 {% endblock %}
 
-{% block activities_active %} active{% endblock %}
-
+{% block title %}{% trans "Activités" %}{% endblock %}
 
 {% block main %}
 {% if object_list %}
-	<div class="container mt-3">
-	{% for baby in babies %}
-		<h2>{{ baby.first_name }} <a href="{% url 'activities:baby_update' baby.id %}" type="button" class="btn btn-sm btn-outline-primary btn-h2"><i class="fas fa-cog"></i></a></h2>
-		<hr>
-		<div class="row">
-			<div class="col">
-				<button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#bottleModal"><i class="fas fa-plus-circle"></i> {% trans "Biberon" %}</button>
-				<div class="modal fade" id="bottleModal" tabindex="-1" role="dialog" aria-labelledby="bottleModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="bottleModalLabel">{% trans "Nouveau biberon" %}</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-							<form method="post" action="{% url 'activities:bottle_create' %}">
-								<div class="modal-body">
-						            {% csrf_token %}
-					            	<div class="form-group">
-										<label for="id_quantity">{% trans "Quantité" %}</label>
-										<input name="quantity" min="0" class="form-control" placeholder="70" title="Veuillez indiquer la quantité souhaitée" id="id_quantity" type="number">
-										<small class="form-text text-muted">{% trans "Veuillez indiquer la quantité de lait bue par bébé" %}</small>
+	<div class="row">
+		<div class="col-xl-12 col-lg-12">
+		{% for baby in babies %}
+			<section section id="baby-{{ baby.id }}" class="card">
+				<div class="card-header">
+			        <h4 class="card-title float-left">{{ baby.first_name }}</h4>
+					<a href="{% url 'activities:baby_update' baby.id %}">
+						<i class="ft-edit-2 primary lighten-2 float-left font-medium-4 ml-1"></i>
+					</a>
+			        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+		            <div class="heading-elements">
+			            <ul class="list-inline mb-0">
+			                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+			                <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+			                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+			                <li><a data-action="close"><i class="ft-x"></i></a></li>
+			            </ul>
+		        	</div>
+			    </div>
+	            <div class="card-content">
+					<button type="button" class="btn btn-bg-gradient-x-red-pink btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#bottleModal"><i class="fas fa-plus-circle"></i> {% trans "Biberon" %}</button>
+					<div class="modal fade" id="bottleModal" tabindex="-1" role="dialog" aria-labelledby="bottleModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="bottleModalLabel">{% trans "Nouveau biberon" %}</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<form method="post" action="{% url 'activities:bottle_create' %}">
+									<div class="modal-body">
+							            {% csrf_token %}
+						            	<div class="form-group">
+											<label for="id_quantity">{% trans "Quantité" %}</label>
+											<input name="quantity" min="0" class="form-control" placeholder="70" title="Veuillez indiquer la quantité souhaitée" id="id_quantity" type="number">
+											<small class="form-text text-muted">{% trans "Veuillez indiquer la quantité de lait bue par bébé" %}</small>
+										</div>
+										<div class="form-group">
+											<label for="id_comment">{% trans "Commentaire" %}</label>
+											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
 									</div>
-									<div class="form-group">
-										<label for="id_comment">{% trans "Commentaire" %}</label>
-										<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
-									<button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col">
-				<button type="button" class="btn btn-warning btn-lg btn-block" data-toggle="modal" data-target="#peeModal"><i class="fas fa-plus-circle"></i> {% trans "Pipi" %}</button>
-				<div class="modal fade" id="peeModal" tabindex="-1" role="dialog" aria-labelledby="peeModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="peeModalLabel">{% trans "Nouveau pipi" %}</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-								</button>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
+										<button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+									</div>
+								</form>
 							</div>
-							<form method="post" action="{% url 'activities:pee' %}">
-								<div class="modal-body">
-						            {% csrf_token %}
-									<div class="form-group">
-										<label for="id_comment">{% trans "Commentaire" %}</label>
-										<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
-									<button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
-								</div>
-							</form>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="col">
-				<button type="button" class="btn btn-warning btn-pooh btn-lg btn-block" data-toggle="modal" data-target="#poohModal"><i class="fas fa-plus-circle"></i> {% trans "Caca" %}</button>
-				<div class="modal fade" id="poohModal" tabindex="-1" role="dialog" aria-labelledby="poohModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="poohModalLabel">{% trans "Nouveau caca" %}</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-								</button>
+					<button type="button" class="btn btn-bg-gradient-x-orange-yellow btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#peeModal"><i class="fas fa-plus-circle"></i> {% trans "Pipi" %}</button>
+					<div class="modal fade" id="peeModal" tabindex="-1" role="dialog" aria-labelledby="peeModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="peeModalLabel">{% trans "Nouveau pipi" %}</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<form method="post" action="{% url 'activities:pee' %}">
+									<div class="modal-body">
+							            {% csrf_token %}
+										<div class="form-group">
+											<label for="id_comment">{% trans "Commentaire" %}</label>
+											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
+										<button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+									</div>
+								</form>
 							</div>
-							<form method="post" action="{% url 'activities:pooh' %}">
-								<div class="modal-body">
-						            {% csrf_token %}
-									<div class="form-group">
-										<label for="id_comment">{% trans "Commentaire" %}</label>
-										<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
-									<button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
-								</div>
-							</form>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="col">
-				<button type="button" class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#bathModal"><i class="fas fa-plus-circle"></i> {% trans "Bain" %}</button>
-				<div class="modal fade" id="bathModal" tabindex="-1" role="dialog" aria-labelledby="bathModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="bathModalLabel">{% trans "Nouveau bain" %}</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-								</button>
+					<button type="button" class="btn btn-bg-gradient-x-purple-red btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#poohModal"><i class="fas fa-plus-circle"></i> {% trans "Caca" %}</button>
+					<div class="modal fade" id="poohModal" tabindex="-1" role="dialog" aria-labelledby="poohModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="poohModalLabel">{% trans "Nouveau caca" %}</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<form method="post" action="{% url 'activities:pooh' %}">
+									<div class="modal-body">
+							            {% csrf_token %}
+										<div class="form-group">
+											<label for="id_comment">{% trans "Commentaire" %}</label>
+											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
+										<button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+									</div>
+								</form>
 							</div>
-							<form method="post" action="{% url 'activities:bath' %}">
-								<div class="modal-body">
-						            {% csrf_token %}
-									<div class="form-group">
-										<label for="id_comment">{% trans "Commentaire" %}</label>
-										<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
-									<button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
-								</div>
-							</form>
 						</div>
 					</div>
-				</div>
-			</div>
+					<button type="button" class="btn btn-bg-gradient-x-blue-green btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#bathModal"><i class="fas fa-plus-circle"></i> {% trans "Bain" %}</button>
+					<div class="modal fade" id="bathModal" tabindex="-1" role="dialog" aria-labelledby="bathModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="bathModalLabel">{% trans "Nouveau bain" %}</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<form method="post" action="{% url 'activities:bath' %}">
+									<div class="modal-body">
+							            {% csrf_token %}
+										<div class="form-group">
+											<label for="id_comment">{% trans "Commentaire" %}</label>
+											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Fermer" %}</button>
+										<button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					{% include "activities/activities.html" %}
+	            </div>
+	        </section>
+		{% endfor %}
 		</div>
-		{% if baby.activities %}
-			{% include "activities/activities.html" %}
-		{% endif %}
-	{% endfor %}
 	</div>
 {% else %}
 {% endif %}

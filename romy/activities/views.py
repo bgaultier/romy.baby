@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.utils import timezone
+from django.db.models import Sum
 
 from datetime import timedelta
 
@@ -37,12 +38,38 @@ class IndexView(generic.ListView):
             bath = activities.filter(type='BATH', created_date__gt=timezone.now().replace(hour=0, minute=0))
             try:
                 next_bottle = bottles_today.first().created_date + timedelta(minutes=baby.feeding_period)
-                last_diaper = diapers_today.first().created_date
-                last_bath = activities.filter(type='BATH').first().created_date
             except AttributeError:
                 next_bottle = None
+
+            try:
+                last_diaper = diapers_today.first().created_date
+            except AttributeError:
                 last_diaper = None
+
+            try:
+                last_bath = activities.filter(type='BATH').first().created_date
+            except AttributeError:
                 last_bath = None
+
+            bottles = []
+            for d in range(6, -1, -1):
+                dt = timezone.now() - timedelta(days=d)
+                bottles.append(activities.filter(type='BOTTLE', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year).annotate(total_amount=Sum('quantity')))
+
+            diapers = []
+            for d in range(6, -1, -1):
+                dt = timezone.now() - timedelta(days=d)
+                diapers.append(activities.filter(type__startswith='P', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year))
+
+            baths = []
+            for d in range(2, -1, -1):
+                dt = timezone.now() - timedelta(days=d)
+                bath = activities.filter(type='BATH', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
+                if bath:
+                    baths.append(bath.first().created_date)
+                else:
+                    baths.append(dt.replace(hour=0, minute=0))
+
             babies_list.append({
                 'first_name':baby.first_name,
                 'id':baby.id,
@@ -53,16 +80,19 @@ class IndexView(generic.ListView):
                     'night':night_bottles,
                     'day':day_bottles,
                     'next':next_bottle,
+                    'week':bottles,
                 },
                 'diapers': {
                     'today':diapers_today,
                     'night':night_diapers,
                     'day':day_diapers,
                     'last':last_diaper,
+                    'week': diapers,
                 },
                 'bath': {
                     'today':bath,
                     'last':last_bath,
+                    'last_days':baths,
                 },
             })
         context['babies'] = babies_list

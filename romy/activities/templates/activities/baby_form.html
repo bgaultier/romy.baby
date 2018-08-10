@@ -2,26 +2,43 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block baby_active %} active{% endblock %}
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'activities:index' %}">{% trans "Bébés" %}</a></li>
+<li class="breadcrumb-item active">{{ object }}</li>
+{% endblock %}
+
+{% block title %}{{ object }}{% endblock %}
 
 {% block main %}
-<div class="card mt-3 mb-3">
-    <h3 class="card-header">{% trans "Modifier" %} {{ object }}</h3>
-    <div class="card-body">
-        <form method="post">
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            <div class="form-group">
-                <label for="id_api_key">{% trans "Clé d'API" %}</label>
-                <div class="input-group">
-                    <input readonly name="api_key" type="text" class="form-control" value="{{ object.api_key}}">
-                    <div class="input-group-append">
-                        <a href="{% url 'activities:generate_apikey' object.id %}" class="btn btn-outline-primary" type="button"><i class="fas fa-sync-alt"></i></a>
+<div class="row">
+    <div class="col-xl-12 col-lg-12">
+        <section section id="baby-{{ baby.id }}" class="card">
+			<div class="card-header">
+		        <h4 class="card-title">{% trans "Modifier" %} {{ object }}</h4>
+		        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+                <div class="heading-elements">
+		            <ul class="list-inline mb-0">
+		                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+		            </ul>
+		        </div>
+		    </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="form-group">
+                        <label for="id_api_key">{% trans "Clé d'API" %}</label>
+                        <div class="input-group">
+                            <input readonly name="api_key" type="text" class="form-control" value="{{ object.api_key}}">
+                            <div class="input-group-append">
+                                <a href="{% url 'activities:generate_apikey' object.id %}" class="btn btn-outline-primary" type="button"><i class="fas fa-sync-alt"></i></a>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">{% trans "Enregistrer" %}</button>
-        </form>
+        </section>
     </div>
 </div>
 {% endblock %}

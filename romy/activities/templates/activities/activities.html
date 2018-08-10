@@ -3,30 +3,38 @@
 {% load humanize %}
 
 {% if baby.activities %}
-<table class="table table-hover" style="margin-top: 64px">
-    <thead>
-        <tr>
-            <th scope="col">{% trans "Date" %}</th>
-            <th scope="col">{% trans "Type" %}</th>
-            <th scope="col">{% trans "Commentaire" %}</th>
-            <th scope="col">{% trans "Quantité" %}</th>
-            <th scope="col">{% trans "Actions" %}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for activity in baby.activities %}
-        <tr>
-            <th scope="row">{{ activity.created_date|naturalday }} {% trans "à" %} {{ activity.created_date|time }}</th>
-            <td style="color: #{% if activity.type == 'BOTTLE' %}78C2AD{% elif activity.type == 'BATH' %}6CC3D5{% elif activity.type == 'PEE' %}FFCE67{% elif activity.type == 'POOH' %}bd9476{% elif activity.type == 'SLEE' %}#d9dadb{% endif %};"><i class="fa fa-circle"></i></td>
-            <td>{{ activity.comment }}</td>
-            <td>{% if activity.quantity %}{{ activity.quantity }}{% trans "ml" %}{% endif %}</td>
-            <td>
-                <a href="{% if activity.type == 'BOTTLE' %}{% url 'activities:bottle_update' activity.id %}{% else %}{% url 'activities:update' activity.id %}{% endif %}" class="btn btn-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
-                <a href="{% url 'activities:delete' activity.baby.id activity.id %}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<a href="{% url 'activities:csv_view' baby.id %}" type="button" class="btn btn-outline-info float-right mt-3" style="margin-bottom:96px;"><i class="fas fa-file-download"></i> {% trans "Télécharger au format .csv" %}</a>
+<div id="product-summary" class="media-list position-relative">
+    <div class="table-responsive">
+        <table class="table table-hover table-xl mb-0" id="product-summary-table">
+            <thead>
+                <tr>
+                    <th scope="col">{% trans "Date" %}</th>
+                    <th scope="col">{% trans "Type" %}</th>
+                    <th scope="col">{% trans "Commentaire" %}</th>
+                    <th scope="col">{% trans "Quantité" %}</th>
+                    <th scope="col">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activity in baby.activities %}
+                <tr>
+                    <td class="text-muted">{{ activity.created_date|naturalday }} {% trans "à" %} {{ activity.created_date|time }}</td>
+                    <td class="{% if activity.type == 'BOTTLE' %}danger{% elif activity.type == 'BATH' %}info{% elif activity.type == 'PEE' %}warning{% elif activity.type == 'POOH' %}primary{% endif %}"><i class="fa fa-circle"></i></td>
+                    <td>{{ activity.comment }}</td>
+                    <td>{% if activity.quantity %}{{ activity.quantity }}{% trans "ml" %}{% endif %}</td>
+                    <td>
+                        <a href="{% if activity.type == 'BOTTLE' %}{% url 'activities:bottle_update' activity.id %}{% else %}{% url 'activities:update' activity.id %}{% endif %}">
+                            <i class="ft-edit-2 blue-grey lighten-2 font-medium-5 ml-1"></i>
+                        </a>
+                        <a href="{% url 'activities:delete' activity.baby.id activity.id %}">
+                            <i class="ft-trash danger lighten-2 font-medium-5 ml-1"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a href="{% url 'activities:csv_view' baby.id %}" type="button" class="btn btn-outline-info round btn-min-width m-1 float-right" style="margin-bottom:96px;"><i class="fas fa-file-download"></i> {% trans "Télécharger au format .csv" %}</a>
 {% endif %}

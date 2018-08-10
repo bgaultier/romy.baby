@@ -6,86 +6,317 @@
 
 {% block scripts %}
 	{% bootstrap_javascript jquery %}
+	<script src="{% static "vendors/js/charts/chartist.min.js" %}" type="text/javascript"></script>
+	<script type="text/javascript">
+		var barOptions = {
+			axisY: {
+				showGrid: false,
+				showLabel: false,
+				offset: 0
+			},
+			axisX: {
+				showLabel: true,
+				showGrid: false,
+			},
+			fullWidth: true,
+		};
+
+
+		var lineOptions = {
+			axisX: {
+				showLabel: false,
+				showGrid: false,
+			},
+			axisY: {
+				showLabel: false,
+				showGrid: false,
+				offset: 0
+			},
+			lineSmooth: Chartist.Interpolation.simple({
+				divisor: 2
+			}),
+			fullWidth: true
+		};
+
+		var ProjectStatsBar = new Chartist.Bar('#progress-stats-bar-chart', {
+			labels: [{% for quantity in babies.0.bottles.week %}'{{ quantity.first.created_date|date:"D"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+			series: [
+				[20, 20, 20, 20, 20, 20, 20]
+			]
+		}, barOptions);
+
+		ProjectStatsBar.on('draw', function (data) {
+			if (data.type === 'bar') {
+				data.element.attr({
+					style: 'stroke-width: 25px'
+				});
+
+			}
+		});
+
+		var ProjectStatsLine = new Chartist.Line('#progress-stats-line-chart', {
+			series: [
+				[{% for quantity in babies.0.bottles.week %}{{ quantity.first.total_amount|default:0 }}{% if not forloop.last %},{% endif %}{% endfor %}]
+			]
+		}, lineOptions);
+
+		ProjectStatsLine.on('created', function (data) {
+			var defs = data.svg.querySelector('defs') || data.svg.elem('defs');
+			defs.elem('linearGradient', {
+				id: 'lineLinearStats',
+				x1: 0,
+				y1: 0,
+				x2: 1,
+				y2: 0
+			}).elem('stop', {
+				offset: '0%',
+				'stop-color': 'rgba(252,98,107,0.1)'
+			}).parent().elem('stop', {
+				offset: '10%',
+				'stop-color': 'rgba(252,98,107,1)'
+			}).parent().elem('stop', {
+				offset: '80%',
+				'stop-color': 'rgba(252,98,107, 1)'
+			}).parent().elem('stop', {
+				offset: '98%',
+				'stop-color': 'rgba(252,98,107, 0.1)'
+			});
+
+			return defs;
+
+
+		}).on('draw', function (data) {
+			var circleRadius = 5;
+			if (data.type === 'point') {
+				var circle = new Chartist.Svg('circle', {
+					cx: data.x,
+					cy: data.y,
+					'ct:value': data.y,
+					r: circleRadius,
+					class: data.value.y === 15 ? 'ct-point ct-point-circle' : 'ct-point ct-point-circle-transperent'
+				});
+				data.element.replace(circle);
+			}
+		});
+
+		var ProjectStatsBar2 = new Chartist.Bar('#progress-stats-bar-chart2', {
+	        labels: [{% for diapers in babies.0.diapers.week %}'{{ diapers.first.created_date|date:"D"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+	        series: [
+	            [20, 20, 20, 20, 20, 20, 20]
+	        ]
+	    }, barOptions);
+
+	    ProjectStatsBar2.on('draw', function (data) {
+	        if (data.type === 'bar') {
+	            data.element.attr({
+	                style: 'stroke-width: 25px'
+	            });
+
+	        }
+	    });
+
+
+	    var ProjectStatsLine2 = new Chartist.Line('#progress-stats-line-chart2', {
+	        series: [
+	            [{% for diapers in babies.0.diapers.week %}{{ diapers.count|default:0 }}{% if not forloop.last %},{% endif %}{% endfor %}]
+	        ]
+	    }, lineOptions);
+
+	    ProjectStatsLine2.on('created', function (data) {
+	        var defs = data.svg.querySelector('defs') || data.svg.elem('defs');
+	        defs.elem('linearGradient', {
+	            id: 'lineLinearStats2',
+	            x1: 0,
+	            y1: 0,
+	            x2: 1,
+	            y2: 0
+	        }).elem('stop', {
+	            offset: '0%',
+	            'stop-color': 'rgba(253,185,1,0.1)'
+	        }).parent().elem('stop', {
+	            offset: '10%',
+	            'stop-color': 'rgba(253,185,1,1)'
+	        }).parent().elem('stop', {
+	            offset: '80%',
+	            'stop-color': 'rgba(253,185,1, 1)'
+	        }).parent().elem('stop', {
+	            offset: '98%',
+	            'stop-color': 'rgba(253,185,1, 0.1)'
+	        });
+
+	        return defs;
+
+
+	    }).on('draw', function (data) {
+	        var circleRadius = 5;
+	        if (data.type === 'point') {
+	            var circle = new Chartist.Svg('circle', {
+	                cx: data.x,
+	                cy: data.y,
+	                'ct:value': data.y,
+	                r: circleRadius,
+	                class: data.value.y === 15 ? 'ct-point ct-point-circle' : 'ct-point ct-point-circle-transperent'
+	            });
+	            data.element.replace(circle);
+	        }
+	    });
+	</script>
 {% endblock %}
 
-{% block baby_active %} active{% endblock %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/menu/menu-types/vertical-menu.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/pages/dashboard-ecommerce.css" %}">
+{% endblock %}
 
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">{% trans "Bébés" %}</li>
+{% endblock %}
+{% block title %}{% trans "Bébés" %}{% endblock %}
 
 {% block main %}
-<div class="container mt-3">
 {% if babies %}
 {% for baby in babies %}
-    <h2>{{ baby.first_name }} <a href="{% url 'activities:baby_update' baby.id %}" type="button" class="btn btn-sm btn-outline-primary btn-h2"><i class="fas fa-cog"></i></a></h2>
-    <hr>
-    <div class="card-deck mb-3 mt-3 text-center">
-        <div class="card col-sm-4 text-white bg-primary">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-3">
-                        <img src="{% static "img/bottle.svg" %}" alt="Logo" height=56 />
+<div class="row">
+    <div class="col-xl-4 col-lg-6 col-md-12">
+        <div class="card pull-up ecom-card-1 bg-white">
+            <div class="card-content ecom-card2 height-300">
+                <h5 class="text-muted danger position-absolute p-1">{% trans "Biberons" %}</h5>
+                <div class="float-right p-1">
+					<img src="{% static "img/bottle.svg" %}" alt="{% trans "Biberon" %}" height="28" />
+                </div>
+				<div class="ct-golden-section height-75 position-relative p-3 text-left">
+                    <div class="col-3 float-left">
+                        <h2 class="display-4 danger">{{ baby.bottles.today|length }}</h2>
                     </div>
-                    <div class="col-3">
-                        <h1>{{ baby.bottles.today|length }}</h1>
-                    </div>
-                    <div class="col-6 caption">
-                        <div class="row caption text-left">
+                    <div class="col-9 danger float-left">
+                        <div class="row" style="color: rgba(0, 0, 0, 0.4);">
                             <small class="col">{{ baby.bottles.day }} {% trans "journée" %}</small>
                             <small class="col">{{ baby.bottles.night|length }} {% trans "nuit" %}</small>
                         </div>
                     </div>
+				</div>
+                <div class="progress-stats-container ct-golden-section height-75 position-relative pt-3  ">
+                    <div id="progress-stats-bar-chart"></div>
+                    <div id="progress-stats-line-chart" class="progress-stats-shadow"></div>
                 </div>
-                <small>{% trans "Prochain biberon :" %} {{ baby.bottles.next|time }}</small>
             </div>
-        </div>
-        <div class="card col-sm-4 text-white bg-warning">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-4">
-                        <img src="{% static "img/diaper.svg" %}" alt="Logo" height=48 />
-                    </div>
-                    <div class="col-2">
-                        <h1>{{ baby.diapers.today|length }}</h1>
-                    </div>
-                    <div class="row col-7 caption text-left">
-                        <small class="col">{{ baby.diapers.day }} {% trans "journée" %}</small>
-                        <small class="col">{{ baby.diapers.night|length }} {% trans "nuit" %}</small>
-                    </div>
-                </div>
-                {% if baby.diapers.last %}<small>{% trans "Dernier change :" %} {{ baby.diapers.last|time }}</small>{% endif %}
+			{% if baby.bottles.next %}
+			<div class="card-footer p-1">
+				<span class="badge badge-pill badge-danger">{% trans "Prochain biberon :" %} {{ baby.bottles.next|time }}</span>
+				<span class="float-right">
+					<a href="#" class="card-link danger">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
+				</span>
             </div>
-        </div>
-        <div class="card col-sm-4 text-white bg-info">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-4">
-                        <img src="{% static "img/bath.svg" %}" alt="Logo" height=56 />
-                    </div>
-                    <div class="col-8">
-                        <h1>{% if baby.bath.today %}oui{% else %}non{% endif %}</h1>
-                    </div>
-                </div>
-                <small class="text-center">{% trans "Dernier bain :" %} {{ baby.bath.last|naturalday }}</small>
-            </div>
-        </div>
-        <div class="card col-sm-4 bg-light">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-4">
-                        <img src="{% static "img/crying.svg" %}" alt="Logo" height=72 style="margin-top:-8px" />
-                    </div>
-                    <div class="col-8">
-                        <h1>{{ baby.night_activities|length }}</h1>
-                    </div>
-                </div>
-                <small class="text-center">{% trans "La nuit dernière" %}</small>
-            </div>
+			{% endif %}
         </div>
     </div>
-    {% if baby.activities %}
-		{% include "activities/activities.html" %}
-	{% endif %}
+    <div class="col-xl-4 col-lg-6 col-md-12">
+        <div class="card pull-up ecom-card-1 bg-white">
+            <div class="card-content ecom-card2 height-300">
+                <h5 class="text-muted warning position-absolute p-1">{% trans "Couches" %}</h5>
+                <div class="float-right p-1">
+					<img src="{% static "img/diaper.svg" %}" alt="{% trans "Couche" %}" height="24" />
+                </div>
+				<div class="ct-golden-section height-75 position-relative p-3">
+                    <div class="col-3 float-left">
+                        <h2 class="display-4 warning">{{ baby.diapers.today|length }}</h2>
+                    </div>
+                    <div class="col-9 danger float-left">
+                        <div class="row text-left" style="color: rgba(0, 0, 0, 0.4);">
+                            <small class="col">{{ baby.diapers.day }} {% trans "journée" %}</small>
+                            <small class="col">{{ baby.diapers.night|length }} {% trans "nuit" %}</small>
+                        </div>
+                    </div>
+				</div>
+                <div class="progress-stats-container ct-golden-section height-75 position-relative pt-3">
+                    <div id="progress-stats-bar-chart2"></div>
+                    <div id="progress-stats-line-chart2" class="progress-stats-shadow"></div>
+                </div>
+            </div>
+			{% if baby.diapers.last %}
+			<div class="card-footer p-1">
+				<span class="badge badge-pill badge-warning">{% trans "Dernier change :" %} {{ baby.diapers.last|time }}</span>
+				<span class="float-right">
+					<a href="#" class="card-link warning">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
+				</span>
+            </div>
+			{% endif %}
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-12">
+        <div class="card pull-up ecom-card-1 bg-white">
+            <div class="card-content ecom-card2 height-300">
+                <h5 class="text-muted info position-absolute p-1">{% trans "Bain" %}</h5>
+				<div class="float-right p-1">
+					<img src="{% static "img/bath.svg" %}" alt="{% trans "Bain" %}" height="28" />
+                </div>
+				<div class="ct-golden-section height-75 position-relative p-3 text-center">
+                    <div class="col">
+                        <h2 class="display-4 info">{% if baby.bath.today %}oui{% else %}non{% endif %}</h2>
+                    </div>
+				</div>
+				<div class="ct-golden-section height-75 position-relative pt-3">
+					{% if baby.bath.last_days %}
+					<div class="table-responsive">
+						<table class="table table-bordered text-center">
+							<thead>
+								<tr class="info">
+									{% for day in baby.bath.last_days %}
+									<th class="col-4">{{ day|date:"D"|capfirst }}</th>
+									{% endfor %}
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									{% for day in baby.bath.last_days %}
+									<td class="col-4">{% if day.hour > 0 %}<div class="badge badge-info"><i class="fas fa-shower"></i> {% trans "à" %} {{ day|time }}</div>{% endif %}</td>
+									{% endfor %}
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+			{% if baby.bath.last %}
+			<div class="card-footer p-1">
+				<span class="badge badge-pill badge-info">{% trans "Dernier bain :" %} {{ baby.bath.last|naturalday }}</span>
+				<span class="float-right">
+					<a href="#" class="card-link info">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
+				</span>
+            </div>
+			{% endif %}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 col-lg-12">
+        <h5 class="card-title text-bold-700 my-2">{% trans "Dernières activités" %}</h5>
+        <section section id="baby-{{ baby.id }}" class="card">
+			<div class="card-header">
+		        <h4 class="card-title float-left">{{ baby.first_name }}</h4>
+				<a href="{% url 'activities:baby_update' baby.id %}">
+					<i class="ft-edit-2 primary lighten-2 float-left font-medium-4 ml-1"></i>
+				</a>
+		        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+	            <div class="heading-elements">
+		            <ul class="list-inline mb-0">
+			    		<li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+		        		<li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+		        		<li><a data-action="close"><i class="ft-x"></i></a></li>
+		            </ul>
+	        	</div>
+		    </div>
+            <div class="card-content">
+				{% include "activities/activities.html" %}
+            </div>
+        </section>
+    </div>
+</div>
 {% endfor %}
 {% else %}
 {% endif %}
-</div>
 {% endblock %}

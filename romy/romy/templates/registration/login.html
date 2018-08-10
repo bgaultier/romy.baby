@@ -1,0 +1,62 @@
+{% load staticfiles %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="author" content="Baptiste Gaultier">
+
+		<title>Romy</title>
+
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" crossorigin="anonymous">
+		<link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
+		<link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css" rel="stylesheet">
+
+		<link rel="stylesheet" type="text/css" href="{% static "css/vendors.css" %}">
+		<link rel="stylesheet" type="text/css" href="{% static "css/app-lite.css" %}">
+
+		<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
+	</head>
+	<body class="vertical-layout vertical-menu 1-column bg-gradient-x-blue-purple-2 menu-expanded blank-page" data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="1-column">
+		<div class="app-content content">
+			<div class="content-wrapper">
+				<div class="content-wrapper-before"></div>
+				<div class="content-header row"></div>
+				<div class="content-body">
+					<section class="flexbox-container">
+						<div class="col-12 d-flex align-items-center justify-content-center">
+							<div class="col-md-4 col-10 box-shadow-2 p-0">
+								<div class="card border-grey border-lighten-3 px-1 py-1 m-0">
+									<div class="card-header border-0">
+										<div class="text-center mb-1">
+											<img class="brand-logo" src="{% static "img/moon.svg" %}" alt="Logo" height="60" />
+										</div>
+										<div class="font-large-1 text-center">
+											{% trans "Connexion" %}
+										</div>
+									</div>
+									<div class="card-content">
+										<div class="card-body">
+											<form method="post">
+							                    {% csrf_token %}
+							                    {% bootstrap_form form %}
+												<div class="form-group row">
+					                                <div class="col-md-6 col-12 text-center text-sm-left"></div>
+					                                <div class="col-md-6 col-12 float-sm-left text-center text-sm-right"><a href="{% url 'password_reset' %}" class="card-link">{% trans "Mot de passe oublié ?" %}</a></div>
+					                            </div>
+							                    <button type="submit" class="btn btn-primary btn-block">{% trans "Connexion" %}</button>
+							                </form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
