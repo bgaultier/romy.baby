@@ -62,7 +62,7 @@ class IndexView(generic.ListView):
                 diapers.append(activities.filter(type__startswith='P', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year))
 
             baths = []
-            for d in range(2, -1, -1):
+            for d in range(3, -1, -1):
                 dt = timezone.now() - timedelta(days=d)
                 bath = activities.filter(type='BATH', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
                 if bath:

@@ -259,19 +259,19 @@
 				</div>
 				<div class="ct-golden-section height-75 position-relative pt-3">
 					{% if baby.bath.last_days %}
-					<div class="table-responsive">
+					<div class="table-responsive py-1">
 						<table class="table table-bordered text-center">
 							<thead>
 								<tr class="info">
 									{% for day in baby.bath.last_days %}
-									<th class="col-4">{{ day|date:"D"|capfirst }}</th>
+									<th>{{ day|date:"D"|capfirst }}</th>
 									{% endfor %}
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									{% for day in baby.bath.last_days %}
-									<td class="col-4">{% if day.hour > 0 %}<div class="badge badge-info"><i class="fas fa-shower"></i> {% trans "à" %} {{ day|time }}</div>{% endif %}</td>
+									<td class="px-0">{% if day.hour > 0 %}<div class="badge badge-info m-0"><i class="fas fa-shower"></i> {% trans "à" %} {{ day|time }}</div>{% endif %}</td>
 									{% endfor %}
 								</tr>
 
