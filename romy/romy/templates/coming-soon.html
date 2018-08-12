@@ -1,0 +1,66 @@
+{% load staticfiles %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="author" content="Baptiste Gaultier">
+
+		<title>Romy</title>
+
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" crossorigin="anonymous">
+		<link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
+		<link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome.min.css" rel="stylesheet">
+
+		<link rel="stylesheet" type="text/css" href="{% static "css/vendors.css" %}">
+		<link rel="stylesheet" type="text/css" href="{% static "css/app-lite.css" %}">
+
+		<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
+	</head>
+	<body class="vertical-layout vertical-menu 1-column bg-gradient-x-blue-purple-2 menu-expanded blank-page" data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="1-column">
+		<div class="app-content content">
+			<div class="content-wrapper">
+				<div class="content-wrapper-before"></div>
+				<div class="content-header row"></div>
+				<div class="content-body">
+					<section class="flexbox-container">
+					    <div class="col-12 d-flex align-items-center justify-content-center">
+					        <div class="col-md-6 col-10 p-0">
+					            <div class="card card-transparent box-shadow-0 border-0">
+					                <div class="card-header card-transparent  border-0">
+					                    <div class="text-center mb-1">
+											<img  src="{% static "img/wolf-white.svg" %}" alt="Logo" height="38" />
+					                    </div>
+					                    <div class="font-large-1  text-center white">
+					                        WE ARE COMING SOON !!
+					                    </div>
+					                </div>
+					                <div class="card-content">
+					                    <div class="text-center">
+											<div class="col-12">
+					                            <p class="card-text lead white text-left">
+													{% blocktrans %}
+													Coucou,<br>
+													Nous sommes Baptiste et Ingrid et nous venons d’accueillir Romy.<br>
+													Romy notre bébé, que l’on va garder pour nous.<br>
+													Et <a href="/babies/" class="text-white text-bold-700">Romy.baby</a>, une interface web à destination des tout nouveaux parents que l’on veut bien partager :)<br><br>
+													<a href="/babies/" class="text-white text-bold-700">Romy.baby</a> sert à suivre les biberons, les couches, les bains, et à l’avenir tout ce qui permet à nos tous petits d’être en bonne santé.<br><br>
+													Vous êtes aussi jeune parent ? N’hésitez pas à nous demander une version d’essai, utilisez-là, testez-là, et faites nous vos retours et suggestions d’évolutions.<br><br>
+													Et comme nous voyons la parentalité comme un travail d’équipe, nous avons pensé cet outil comme étant utilisable par tous les membres de la famille.<br><br>
+													{% endblocktrans %}
+												</p>
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					        </div>
+					    </div>
+					</section>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
