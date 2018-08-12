@@ -54,7 +54,9 @@ class IndexView(generic.ListView):
             bottles = []
             for d in range(6, -1, -1):
                 dt = timezone.now() - timedelta(days=d)
-                bottles.append(activities.filter(type='BOTTLE', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year).annotate(total_amount=Sum('quantity')))
+                bottles_by_day = activities.filter(type='BOTTLE', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
+                amount = bottles_by_day.aggregate(Sum('quantity'))
+                bottles.append({'datetime':dt, 'amount': amount})
 
             diapers = []
             for d in range(6, -1, -1):

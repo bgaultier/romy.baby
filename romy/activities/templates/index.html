@@ -9,13 +9,9 @@
 	<script src="{% static "vendors/js/charts/chartist.min.js" %}" type="text/javascript"></script>
 	<script type="text/javascript">
 		var ProjectStatsLine = new Chartist.Line('#progress-stats-line-chart', {
-			labels: [{% for quantity in babies.0.bottles.week %}'{{ quantity.first.created_date|date:"D"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+			labels: [{% for day in babies.0.bottles.week %}'{{ day.datetime|date:"D"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
 			series: [
-				[
-				{% for quantity in babies.0.bottles.week %}
-					{meta: '{{ quantity.first.created_date|date:"D"|capfirst }}', value: {{ quantity.first.total_amount|default:0|floatformat:"0" }} }{% if not forloop.last %},{% endif %}
-				{% endfor %}
-				]
+				[{% for day in babies.0.bottles.week %}{{ day.amount.quantity__sum|default:0|floatformat:"0" }}{% if not forloop.last %},{% endif %}{% endfor %}]
 			]
 		});
 
