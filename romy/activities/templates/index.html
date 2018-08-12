@@ -8,57 +8,16 @@
 	{% bootstrap_javascript jquery %}
 	<script src="{% static "vendors/js/charts/chartist.min.js" %}" type="text/javascript"></script>
 	<script type="text/javascript">
-		var barOptions = {
-			axisY: {
-				showGrid: false,
-				showLabel: false,
-				offset: 0
-			},
-			axisX: {
-				showLabel: true,
-				showGrid: false,
-			},
-			fullWidth: true,
-		};
-
-
-		var lineOptions = {
-			axisX: {
-				showLabel: false,
-				showGrid: false,
-			},
-			axisY: {
-				showLabel: false,
-				showGrid: false,
-				offset: 0
-			},
-			lineSmooth: Chartist.Interpolation.simple({
-				divisor: 2
-			}),
-			fullWidth: true
-		};
-
-		var ProjectStatsBar = new Chartist.Bar('#progress-stats-bar-chart', {
+		var ProjectStatsLine = new Chartist.Line('#progress-stats-line-chart', {
 			labels: [{% for quantity in babies.0.bottles.week %}'{{ quantity.first.created_date|date:"D"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
 			series: [
-				[20, 20, 20, 20, 20, 20, 20]
+				[
+				{% for quantity in babies.0.bottles.week %}
+					{meta: '{{ quantity.first.created_date|date:"D"|capfirst }}', value: {{ quantity.first.total_amount|default:0|floatformat:"0" }} }{% if not forloop.last %},{% endif %}
+				{% endfor %}
+				]
 			]
-		}, barOptions);
-
-		ProjectStatsBar.on('draw', function (data) {
-			if (data.type === 'bar') {
-				data.element.attr({
-					style: 'stroke-width: 25px'
-				});
-
-			}
 		});
-
-		var ProjectStatsLine = new Chartist.Line('#progress-stats-line-chart', {
-			series: [
-				[{% for quantity in babies.0.bottles.week %}{{ quantity.first.total_amount|default:0 }}{% if not forloop.last %},{% endif %}{% endfor %}]
-			]
-		}, lineOptions);
 
 		ProjectStatsLine.on('created', function (data) {
 			var defs = data.svg.querySelector('defs') || data.svg.elem('defs');
@@ -83,8 +42,6 @@
 			});
 
 			return defs;
-
-
 		}).on('draw', function (data) {
 			var circleRadius = 5;
 			if (data.type === 'point') {
@@ -99,28 +56,12 @@
 			}
 		});
 
-		var ProjectStatsBar2 = new Chartist.Bar('#progress-stats-bar-chart2', {
-	        labels: [{% for diapers in babies.0.diapers.week %}'{{ diapers.first.created_date|date:"D"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
-	        series: [
-	            [20, 20, 20, 20, 20, 20, 20]
-	        ]
-	    }, barOptions);
-
-	    ProjectStatsBar2.on('draw', function (data) {
-	        if (data.type === 'bar') {
-	            data.element.attr({
-	                style: 'stroke-width: 25px'
-	            });
-
-	        }
-	    });
-
-
 	    var ProjectStatsLine2 = new Chartist.Line('#progress-stats-line-chart2', {
+			labels: [{% for diapers in babies.0.diapers.week %}'{{ diapers.first.created_date|date:"D"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
 	        series: [
 	            [{% for diapers in babies.0.diapers.week %}{{ diapers.count|default:0 }}{% if not forloop.last %},{% endif %}{% endfor %}]
 	        ]
-	    }, lineOptions);
+	    });
 
 	    ProjectStatsLine2.on('created', function (data) {
 	        var defs = data.svg.querySelector('defs') || data.svg.elem('defs');
@@ -165,6 +106,7 @@
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist-plugin-tooltip.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/core/menu/menu-types/vertical-menu.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/pages/dashboard-ecommerce.css" %}">
