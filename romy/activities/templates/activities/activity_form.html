@@ -13,25 +13,9 @@
 {% block title %}{% trans "Activité" %}{% endblock %}
 
 {% block scripts %}
-	{% bootstrap_javascript jquery %}
-    <script src="{% static "vendors/js/pickers/dateTime/moment-with-locales.min.js" %}" type="text/javascript"></script>
-    <script src="{% static "vendors/js/pickers/daterange/daterangepicker.js" %}" type="text/javascript"></script>
-    <script>
-        $(function() {
-            document.getElementById('id_created_date').type = 'datetime-local';
-            datetime = moment($('#id_created_date').val(), 'DD/MM/YYYY HH:mm:ss');
-            $('#id_created_date').daterangepicker({
-                timePicker: true,
-                timePicker24Hour: true,
-                singleDatePicker: true,
-                startDate: datetime,
-                endDate: moment().startOf('hour').add(24, 'hour'),
-                locale: {
-                  format: 'DD/MM/YYYY HH:mm:ss'
-                }
-            });
-        });
-    </script>
+<script>
+	document.getElementById('id_created_date').type = 'datetime-local';
+</script>
 {% endblock %}
 
 {% block main %}
