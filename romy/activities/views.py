@@ -11,8 +11,14 @@ from datetime import timedelta
 
 import csv
 
-from .models import Baby, Activity
+from .models import Baby, Activity, BetaUser
 
+class BetaUserCreateView(generic.CreateView):
+    model = BetaUser
+    fields = ('email')
+    template_name = 'coming-soon.html'
+
+    success_url = reverse_lazy('activities:index')
 
 class IndexView(generic.ListView):
     model = Activity

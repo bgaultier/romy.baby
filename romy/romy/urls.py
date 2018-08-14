@@ -16,10 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from .views import coming_soon
+from .views import BetaUserCreateView
 
 urlpatterns = [
-    path('', coming_soon),
+    path('', BetaUserCreateView.as_view()),
     path('admin/', admin.site.urls),
     path('babies/', include('activities.urls')),
     path('accounts/', include('django.contrib.auth.urls')),

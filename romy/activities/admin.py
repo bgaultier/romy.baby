@@ -1,6 +1,13 @@
 from django.contrib import admin
 
-from .models import Baby, Activity
+from .models import Baby, Activity, BetaUser
+
+
+class BetaUserAdmin(admin.ModelAdmin):
+    readonly_fields = ('email', 'signup_date')
+    list_display = ('id', 'email', 'signup_date')
+
+admin.site.register(BetaUser, BetaUserAdmin)
 
 class BabyAdmin(admin.ModelAdmin):
     readonly_fields = ('api_key', 'last_activity')

@@ -63,3 +63,24 @@ class Activity(models.Model):
         verbose_name = _('Activité')
         verbose_name_plural = _('Activités')
         ordering = ['-created_date']
+
+class BetaUser(models.Model):
+    email = models.EmailField(_(u'Adresse email'), help_text=_("Veuillez saisir votre email pour vous inscrire à la beta"))
+    signup_date = models.DateTimeField(_("Date d'inscription"), auto_now_add=True)
+
+    def __str__(self):
+        return self.email
+
+    def save(self, *args, **kwargs):
+        send_mail(
+            'Nouvelle inscription',
+            "Un•e nouvel•le utilisateur•trice vient de s'incrire " + self.email,
+            'support@romy.baby',
+            ['john@example.com', 'jane@example.com'],
+        )
+
+        return super(BetaUser, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = _('Adresse email de la beta')
+        verbose_name_plural = _('Adresses email de la beta')

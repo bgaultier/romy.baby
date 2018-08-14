@@ -1,7 +1,11 @@
-from django.http import HttpResponse
-from django.template import loader
+from django.views import generic
+from django.urls import reverse_lazy
 
-def coming_soon(request):
-    template = loader.get_template('coming-soon.html')
-    context = {}
-    return HttpResponse(template.render(context, request))
+from activities.models import BetaUser
+
+class BetaUserCreateView(generic.CreateView):
+    model = BetaUser
+    fields = ('email',)
+    template_name = 'coming-soon.html'
+
+    success_url = reverse_lazy('activities:index')

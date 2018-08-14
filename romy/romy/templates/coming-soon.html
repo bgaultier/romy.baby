@@ -19,6 +19,20 @@
 		<link rel="stylesheet" type="text/css" href="{% static "css/app-lite.css" %}">
 
 		<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
+
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static "img/favicon144.png" %}">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static "img/favicon114.png" %}">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static "img/favicon72.png" %}">
+		<link rel="apple-touch-icon-precomposed" href="{% static "img/favicon57.png" %}">
+		<link rel="shortcut icon" href="{% static "img/favicon32.png" %}">
+		<style media="screen">
+			form label {
+				color:white
+			}
+			form small {
+				color:white
+			}
+		</style>
 	</head>
 	<body class="vertical-layout vertical-menu 1-column bg-gradient-x-blue-purple-2 menu-expanded blank-page" data-open="click" data-menu="vertical-menu" data-color="bg-gradient-x-purple-blue" data-col="1-column">
 		<div class="app-content content">
@@ -41,7 +55,7 @@
 					                <div class="card-content">
 					                    <div class="text-center">
 											<div class="col-12">
-					                            <p class="card-text lead white text-left">
+					                            <p class="card-text lead white text-justify">
 													{% blocktrans %}
 													Coucou,<br>
 													Nous sommes Baptiste et Ingrid et nous venons d’accueillir Romy.<br>
@@ -52,6 +66,14 @@
 													Et comme nous voyons la parentalité comme un travail d’équipe, nous avons pensé cet outil comme étant utilisable par tous les membres de la famille.<br><br>
 													{% endblocktrans %}
 												</p>
+												<form method="post" class="white text-left">
+								                    {% csrf_token %}
+													<div class="form-group">
+														<input name="email" maxlength="254" class="form-control" placeholder="Adresse email" title="Veuillez saisir votre email" required="" id="id_email" type="email">
+														<small class="form-text">Veuillez saisir votre email pour vous inscrire à la beta</small>
+													</div>
+								                    <button type="submit" class="btn btn-outline-white">{% trans "S'inscrire" %}</button>
+								                </form>
 					                        </div>
 					                    </div>
 					                </div>
