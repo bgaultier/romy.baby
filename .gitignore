@@ -8,3 +8,4 @@ site_media/
 *.egg-info
 .coverage
 coverage.xml
+.python-version
