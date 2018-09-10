@@ -57,9 +57,8 @@
 										</div>
 										<div class="form-group">
 											<label for="id_created_date">Date de création</label>
-											<input type="text" name="created_date" value="{% now "d/m/y H:i" %}" class="form-control" placeholder="Date de création" title="" required="" id="id_created_date">
+											<input type="text" name="created_date" value="{% now "d/m/Y H:i" %}" class="form-control" placeholder="Date de création" title="" required="" id="id_created_date">
 										</div>
-
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="ft-x"></i> {% trans "Fermer" %}</button>
@@ -86,6 +85,10 @@
 											<label for="id_comment">{% trans "Commentaire" %}</label>
 											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea>
 										</div>
+										<div class="form-group">
+											<label for="id_created_date">Date de création</label>
+											<input type="text" name="created_date" value="{% now "d/m/Y H:i" %}" class="form-control" placeholder="Date de création" title="" required="" id="id_created_date">
+										</div>
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="ft-x"></i> {% trans "Fermer" %}</button>
@@ -110,7 +113,12 @@
 							            {% csrf_token %}
 										<div class="form-group">
 											<label for="id_comment">{% trans "Commentaire" %}</label>
-											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
+											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea>
+										</div>
+										<div class="form-group">
+											<label for="id_created_date">Date de création</label>
+											<input type="text" name="created_date" value="{% now "d/m/Y H:i" %}" class="form-control" placeholder="Date de création" title="" required="" id="id_created_date">
+										</div>
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="ft-x"></i> {% trans "Fermer" %}</button>
@@ -135,7 +143,12 @@
 							            {% csrf_token %}
 										<div class="form-group">
 											<label for="id_comment">{% trans "Commentaire" %}</label>
-											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea></div>
+											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea>
+										</div>
+										<div class="form-group">
+											<label for="id_created_date">Date de création</label>
+											<input type="text" name="created_date" value="{% now "d/m/Y H:i" %}" class="form-control" placeholder="Date de création" title="" required="" id="id_created_date">
+										</div>
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="ft-x"></i> {% trans "Fermer" %}</button>
