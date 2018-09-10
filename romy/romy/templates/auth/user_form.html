@@ -3,18 +3,17 @@
 {% load i18n %}
 
 {% block breadcrumb_items %}
-<li class="breadcrumb-item"><a href="{% url 'activities:index' %}">{% trans "Bébés" %}</a></li>
-<li class="breadcrumb-item active">{{ object }}</li>
+<li class="breadcrumb-item active">{% trans "Mon compte" %}</li>
 {% endblock %}
 
-{% block title %}{{ object }}{% endblock %}
+{% block title %}{% trans "Mon compte" %}{% endblock %}
 
 {% block main %}
 <div class="row">
     <div class="col-xl-12 col-lg-12">
         <section section id="baby-{{ baby.id }}" class="card">
 			<div class="card-header">
-		        <h4 class="card-title">{% trans "Modifier" %} {{ object }}</h4>
+		        <h4 class="card-title">{% trans "Modifier mes paramètres" %}</h4>
 		        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
 		            <ul class="list-inline mb-0">
@@ -26,15 +25,7 @@
                 <form method="post">
                     {% csrf_token %}
                     {% bootstrap_form form %}
-                    <div class="form-group">
-                        <label for="id_api_key">{% trans "Clé d'API" %}</label>
-                        <div class="input-group">
-                            <input readonly name="api_key" type="text" class="form-control" value="{{ object.api_key}}">
-                            <div class="input-group-append">
-                                <a href="{% url 'activities:generate_apikey' object.id %}" class="btn btn-outline-primary" type="button"><i class="fas fa-sync-alt"></i></a>
-                            </div>
-                        </div>
-                    </div>
+                    <a type="button" href="{% url 'password_change' %}" class="btn btn-warning"><i class="ft-lock"></i> {% trans "Changer mot de passe" %}</a>
                     <button type="submit" class="btn btn-primary"><i class="ft-save"></i> {% trans "Enregistrer" %}</button>
                 </form>
             </div>

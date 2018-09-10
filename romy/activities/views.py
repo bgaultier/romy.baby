@@ -25,7 +25,7 @@ class IndexView(generic.ListView):
     template_name = 'index.html'
 
     def get_queryset(self):
-        babies = Baby.objects.filter(parent=self.request.user)
+        babies = Baby.objects.filter(parents=self.request.user)
         return babies
 
     def get_context_data(self, **kwargs):
@@ -107,7 +107,7 @@ class IndexView(generic.ListView):
         return context
 
 def generate_api_key(request, pk):
-    baby=get_object_or_404(Baby, parent=request.user,  pk=pk)
+    baby=get_object_or_404(Baby, parents=request.user,  pk=pk)
     baby.generate_api_key()
     baby.save()
 
@@ -123,7 +123,7 @@ class ActivityDeleteView(generic.DeleteView):
     success_url = reverse_lazy('activities:index')
 
     def get_queryset(self):
-        baby = get_object_or_404(Baby, parent=self.request.user)
+        baby = get_object_or_404(Baby, parents=self.request.user)
         qs = super(ActivityDeleteView, self).get_queryset()
         return qs.filter(baby=baby)
 
@@ -132,7 +132,7 @@ class ActivitiesListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        babies = Baby.objects.filter(parent=self.request.user)
+        babies = Baby.objects.filter(parents=self.request.user)
         babies_list = []
         for baby in babies:
             activities = Activity.objects.filter(baby=baby)
@@ -175,7 +175,7 @@ def activities_csv_view(request, pk):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="activities.csv"'
 
-    baby = get_object_or_404(Baby, pk=pk, parent=request.user)
+    baby = get_object_or_404(Baby, pk=pk, parents=request.user)
     activities = Activity.objects.filter(baby=baby)
 
     writer = csv.writer(response)
@@ -188,65 +188,72 @@ def activities_csv_view(request, pk):
 
 class BottleActivityCreateView(generic.CreateView):
     model = Activity
-    fields = ('quantity', 'comment')
-    success_url = reverse_lazy('activities:index')
+    fields = ('quantity', 'comment', 'created_date')
+    success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        baby = get_object_or_404(Baby, parent=self.request.user)
+        baby = get_object_or_404(Baby, parents=self.request.user)
         form.instance.baby = baby
-        form.instance.created_date = timezone.now()
+        if not form.instance.created_date:
+            form.instance.created_date = timezone.now()
         form.instance.type = 'BOTTLE'
+        form.instance.parent = self.request.user
         return super().form_valid(form)
 
 class BottleActivityUpdateView(generic.UpdateView):
     model = Activity
     fields = ('quantity', 'comment', 'created_date')
-    success_url = reverse_lazy('activities:index')
+    success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        baby = get_object_or_404(Baby, parent=self.request.user)
+        baby = get_object_or_404(Baby, parents=self.request.user)
         return super().form_valid(form)
 
 class ActivityUpdateView(generic.UpdateView):
     model = Activity
     fields = ('comment', 'created_date')
-    success_url = reverse_lazy('activities:index')
+    success_url = reverse_lazy('activities:list')
 
 class PeeActivityCreateView(generic.CreateView):
     model = Activity
-    fields = ['comment']
-    success_url = reverse_lazy('activities:index')
+    fields = ('comment', 'created_date')
+    success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        baby = get_object_or_404(Baby, parent=self.request.user)
+        baby = get_object_or_404(Baby, parents=self.request.user)
         form.instance.baby = baby
-        form.instance.created_date = timezone.now()
+        if not form.instance.created_date:
+            form.instance.created_date = timezone.now()
         form.instance.type = 'PEE'
+        form.instance.parent = self.request.user
         return super().form_valid(form)
 
 class PoohActivityCreateView(generic.CreateView):
     model = Activity
-    fields = ['comment']
-    success_url = reverse_lazy('activities:index')
+    fields = ('comment', 'created_date')
+    success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        print(self)
-        baby = get_object_or_404(Baby, parent=self.request.user)
+        baby = get_object_or_404(Baby, parents=self.request.user)
         form.instance.baby = baby
-        form.instance.created_date = timezone.now()
+        if not form.instance.created_date:
+            form.instance.created_date = timezone.now()
         form.instance.type = 'POOH'
+        form.instance.parent = self.request.user
         return super().form_valid(form)
 
 class BathActivityCreateView(generic.CreateView):
     model = Activity
-    fields = ['comment']
-    success_url = reverse_lazy('activities:index')
+    fields = ('comment', 'created_date')
+    success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        baby = get_object_or_404(Baby, parent=self.request.user)
+        baby = get_object_or_404(Baby, parents=self.request.user)
         form.instance.baby = baby
-        form.instance.created_date = timezone.now()
+        if not form.instance.created_date:
+            form.instance.created_date = timezone.now()
         form.instance.type = 'BATH'
+        form.instance.parent = self.request.user
         return super().form_valid(form)
 
 @csrf_exempt

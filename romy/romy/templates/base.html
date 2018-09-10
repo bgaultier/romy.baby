@@ -39,16 +39,11 @@
 								<li class="nav-item d-none d-md-block"><a class="nav-link nav-link-expand" href="#"><i class="ficon ft-maximize"></i></a></li>
 							</ul>
 							<ul class="nav navbar-nav float-right">
-								<li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#" data-toggle="dropdown"><i class="ficon ft-bell">						 </i></a>
-									<div class="dropdown-menu dropdown-menu-right">
-										<div class="arrow_box_right"><a class="dropdown-item" href="#"><i class="ft-book"></i> Read Mail</a><a class="dropdown-item" href="#"><i class="ft-bookmark"></i> Read Later</a><a class="dropdown-item" href="#"><i class="ft-check-square"></i> Mark all Read			 </a></div>
-									</div>
-								</li>
 								<li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="avatar" style><img style="border-radius: 50%; border: 2px solid #fff;" class="gravatar" src="{% gravatar_url user.email 150 %}" width="150" height="150" alt="gravatar" /><i></i></span></a>
 									<div class="dropdown-menu dropdown-menu-right">
-										<div class="arrow_box_right"><a class="dropdown-item" href="#"><span class="avatar"><span class="user-name text-bold-700 ml-1">{{ user.first_name }}</span></span></a>
-											<div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="ft-user"></i> Edit Profile</a><a class="dropdown-item" href="#"><i class="ft-mail"></i> My Inbox</a><a class="dropdown-item" href="#"><i class="ft-check-square"></i> Task</a><a class="dropdown-item" href="#"><i class="ft-message-square"></i> Chats</a>
-											<div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="ft-power"></i> Logout</a>
+										<div class="arrow_box_right">
+											<a class="dropdown-item" href="{% url 'update_user' user.id %}"><i class="ft-user"></i> {% trans "Mon compte" %}</a>
+											<a class="dropdown-item" href="{% url 'logout' %}"><i class="ft-log-out"></i> {% trans "Déconnexion" %}</a>
 										</div>
 									</div>
 								</li>
@@ -62,7 +57,7 @@
 			<div class="navbar-header">
 				<ul class="nav navbar-nav flex-row">
 					<li class="nav-item mr-auto">
-						<a class="navbar-brand" href="index.html">
+						<a class="navbar-brand" href="{% url 'activities:index' %}">
 							<img class="brand-logo" alt="Logo" src="{% static "img/wolf.svg" %}" height=28 />
 						<h3 class="brand-text">Romy</h3>
 						</a></li>
@@ -72,7 +67,7 @@
 			<div class="main-menu-content">
 				<ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
 					<li class="nav-item{% block baby_active %}{% endblock %}">
-						<a class="nav-link" href="{% url 'activities:index' %}"><i class="ft-home"></i><span class="menu-title">{% trans "Mon bébé" %}</span></a>
+						<a class="nav-link" href="{% url 'activities:index' %}"><i class="ft-home"></i><span class="menu-title">{% trans "Bébés" %}</span></a>
 					</li>
 					<li class="nav-item{% block activities_active %}{% endblock %}">
 						<a class="nav-link" href="{% url 'activities:list' %}"><i class="ft-activity"></i><span class="menu-title">{% trans "Activités" %}</span></a>

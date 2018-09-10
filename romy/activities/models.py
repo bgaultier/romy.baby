@@ -10,7 +10,7 @@ import uuid
 
 class Baby(models.Model):
     first_name = models.CharField(_(u'Prénom'), help_text=_('Veuillez saisir le prénom de votre enfant'), max_length=32, default=_('Romy'))
-    parent = models.ForeignKey(User, verbose_name=_('Parent'), on_delete=models.CASCADE)
+    parents = models.ManyToManyField(User, verbose_name=_('Parents'))
     feeding_period = models.PositiveSmallIntegerField(_('Période entre chaque biberon'), help_text=_("Veuillez indiquer la période entre chaque biberon"), default=60, null=True, blank=True)
 
     api_key = models.CharField(_("Clé d'API"), max_length=36, unique=True)
@@ -48,6 +48,7 @@ class Activity(models.Model):
     type = models.CharField(max_length=6, help_text=_("Veuillez indiquer le type de l'activité"), choices=EVENT_TYPES)
     quantity = models.PositiveSmallIntegerField(_("Quantité"), help_text=_("Veuillez indiquer la quantité de lait bu par bébé"), default=None, null=True, blank=True)
     comment = models.TextField(_("Commentaire"), max_length=1024, blank=True)
+    parent = models.ForeignKey(User, verbose_name=_('Parent'), on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     created_date = models.DateTimeField(_('Date de création'))
     last_connection = models.GenericIPAddressField(_('Dernière connexion'), protocol='both', unpack_ipv4=False, default=None, blank=True, null=True)

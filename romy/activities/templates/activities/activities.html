@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load humanize %}
+{% load gravatar %}
 
 {% if baby.activities %}
 <div id="product-summary" class="media-list position-relative">
@@ -9,20 +10,35 @@
             <thead>
                 <tr>
                     <th scope="col">{% trans "Date" %}</th>
-                    <th scope="col">{% trans "Type" %}</th>
+                    <th class="text-center" scope="col">{% trans "Type" %}</th>
                     <th scope="col">{% trans "Commentaire" %}</th>
                     <th scope="col">{% trans "Quantité" %}</th>
+                    <th scope="col">{% trans "Parent" %}</th>
                     <th scope="col">{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for activity in baby.activities %}
                 <tr>
-                    <td class="text-muted">{{ activity.created_date|naturalday }} {% trans "à" %} {{ activity.created_date|time }}</td>
-                    <td class="{% if activity.type == 'BOTTLE' %}danger{% elif activity.type == 'BATH' %}info{% elif activity.type == 'PEE' %}warning{% elif activity.type == 'POOH' %}primary{% endif %}"><i class="fa fa-circle"></i></td>
-                    <td>{{ activity.comment }}</td>
-                    <td>{% if activity.quantity %}{{ activity.quantity }}{% trans "ml" %}{% endif %}</td>
+                    <td class="text-muted align-middle">{{ activity.created_date|naturalday }} {% trans "à" %} {{ activity.created_date|time }}</td>
+                    <td class="text-center" style="padding-top">
+                        {% if activity.type == 'BOTTLE' %}<img src="{% static "img/bottle.svg" %}" alt="{% trans "Biberon" %}" height="28" />{% elif activity.type == 'BATH' %}
+                        <img src="{% static "img/bath.svg" %}" alt="{% trans "Bain" %}" height="26" />{% elif activity.type == 'PEE' %}
+                        <img src="{% static "img/diaper.svg" %}" alt="{% trans "Couche" %}" height="22" />{% elif activity.type == 'POOH' %}
+                        <img src="{% static "img/pooh.svg" %}" alt="{% trans "Couche" %}" height="22" />{% endif %}
+                    </td>
+                    <td class="align-middle">{{ activity.comment }}</td>
+                    <td class="align-middle">{% if activity.quantity %}{{ activity.quantity }}{% trans "ml" %}{% endif %}</td>
                     <td>
+                        {% if activity.parent %}
+                        <ul class="list-unstyled users-list m-0">
+                            <li data-toggle="tooltip" data-popup="tooltip-custom" data-original-title="{{ activity.parent.first_name }}" class="avatar avatar-sm pull-up">
+                                <img class="gravatar" src="{% gravatar_url activity.parent.email 30 %}" width="10" height="10" alt="gravatar" />
+                            </li>
+                        </ul>
+                        {% endif %}
+                    </td>
+                    <td class="align-middle">
                         <a href="{% if activity.type == 'BOTTLE' %}{% url 'activities:bottle_update' activity.id %}{% else %}{% url 'activities:update' activity.id %}{% endif %}">
                             <i class="ft-edit-2 blue-grey lighten-2 font-medium-5 ml-1"></i>
                         </a>

@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.auth.decorators import login_required
 
-from .views import BetaUserCreateView
+from .views import BetaUserCreateView, UserUpdateView
 
 urlpatterns = [
     path('', BetaUserCreateView.as_view()),
     path('admin/', admin.site.urls),
     path('babies/', include('activities.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/<int:pk>/', login_required(UserUpdateView.as_view()), name='update_user'),
 ]
