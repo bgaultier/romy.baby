@@ -339,3 +339,79 @@ def bath(request, pk):
     activity.save()
 
     return JsonResponse({'baby':baby.first_name})
+
+
+class BottlesAnalyticsView(generic.ListView):
+    model = Activity
+    template_name = 'activities/bottles.html'
+
+    def get_queryset(self):
+        babies = Baby.objects.filter(parents=self.request.user)
+        return babies
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        babies = self.get_queryset()
+        babies_list = []
+        for baby in babies:
+            activities = Activity.objects.filter(baby=baby)
+
+            bottles = []
+            total_amount = 0
+            my_bottles = 0
+            for d in range(31, -1, -1):
+                dt = timezone.now() - timedelta(days=d)
+                bottles_by_day = activities.filter(type='BOTTLE', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
+                amount = bottles_by_day.aggregate(Sum('quantity'))
+                if amount.get('quantity__sum'):
+                    total_amount += amount.get('quantity__sum')
+                my_bottles += len(bottles_by_day.filter(parent=self.request.user))
+                bottles.append({'datetime':dt, 'amount': amount})
+
+            babies_list.append({
+                'first_name':baby.first_name,
+                'id':baby.id,
+                'bottles':bottles,
+                'bottles_average_quantity': total_amount/len(bottles),
+                'bottles_average': len(bottles)/31,
+                'my_bottles_percentage': int(my_bottles*100/len(bottles)),
+            })
+        context['babies'] = babies_list
+
+        return context
+
+class DiaperAnalyticsView(generic.ListView):
+    model = Activity
+    template_name = 'activities/diapers.html'
+
+    def get_queryset(self):
+        babies = Baby.objects.filter(parents=self.request.user)
+        return babies
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        babies = self.get_queryset()
+        babies_list = []
+        for baby in babies:
+            activities = Activity.objects.filter(baby=baby)
+
+            diapers = []
+            total_amount = 0
+            my_diapers = 0
+            for d in range(31, -1, -1):
+                dt = timezone.now() - timedelta(days=d)
+                diapers_by_day = activities.filter(type__startswith='P', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
+                amount = len(diapers_by_day)
+                my_diapers += len(diapers_by_day.filter(parent=self.request.user))
+                diapers.append({'datetime':dt, 'amount': amount})
+
+            babies_list.append({
+                'first_name':baby.first_name,
+                'id':baby.id,
+                'diapers':diapers,
+                'diapers_average': len(diapers)/31,
+                'my_diapers_percentage': int(my_diapers*100/len(diapers)),
+            })
+        context['babies'] = babies_list
+
+        return context

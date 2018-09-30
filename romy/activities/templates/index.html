@@ -4,6 +4,8 @@
 {% load i18n %}
 {% load humanize %}
 
+{% block babies_active %} active{% endblock %}
+
 {% block scripts %}
 	<script src="{% static "vendors/js/charts/chartist.min.js" %}" type="text/javascript"></script>
 	<script type="text/javascript">
@@ -101,7 +103,6 @@
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist-plugin-tooltip.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/core/menu/menu-types/vertical-menu.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/pages/dashboard-ecommerce.css" %}">

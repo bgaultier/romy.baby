@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load humanize %}
+
+{% block analytics_active %} open{% endblock %}
+{% block diapers_analytics_active %} class="active"{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist-plugin-tooltip.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/menu/menu-types/vertical-menu.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/pages/dashboard-ecommerce.css" %}">
+{% endblock %}
+
+{% block scripts %}
+	<script src="{% static "vendors/js/charts/chartist.min.js" %}" type="text/javascript"></script>
+	<script src="{% static "vendors/js/charts/chartist-plugin-tooltip.min.js" %}" type="text/javascript"></script>
+	<script type="text/javascript">
+		var quarterlySales = new Chartist.Bar('#quarterly-sales', {
+			labels: [{% for day in babies.0.diapers %}'{{ day.datetime|date:"d/m"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+			series: [
+				[{% for day in babies.0.diapers %}{{ day.amount|default:0|floatformat:"0" }}{% if not forloop.last %},{% endif %}{% endfor %}]
+			]
+	    }, {
+	            axisX: {
+	                showGrid: false,
+	                labelInterpolationFnc: function (value, index) {
+	                    return index % 6 === 0 ? value : null;
+	                }
+	            },
+	            plugins: [
+	                Chartist.plugins.tooltip({
+	                    appendToBody: true,
+	                    pointClass: 'ct-point'
+	                })
+	            ]
+	        });
+	    quarterlySales.on('draw', function (data) {
+	        if (data.type === 'bar') {
+	            data.element.attr({
+	                style: 'stroke-width: 10px',
+	                y1: 250,
+	                x1: data.x1 + 0.001
+	            });
+	            data.group.append(new Chartist.Svg('circle', {
+	                cx: data.x2,
+	                cy: data.y2,
+	                r: 5
+	            }, 'ct-slice-pie'));
+	        }
+	    });
+	    quarterlySales.on('created', function (data) {
+	        var defs = data.svg.querySelector('defs') || data.svg.elem('defs');
+	        defs.elem('linearGradient', {
+	            id: 'barGradient1',
+	            x1: 0,
+	            y1: 0,
+	            x2: 0,
+	            y2: 1
+	        }).elem('stop', {
+	            offset: 0,
+	            'stop-color': 'rgba(253, 185,0, 1)'
+	        }).parent().elem('stop', {
+	            offset: 1,
+	            'stop-color': 'rgba(253, 185, 0, 0.6)'
+	        });
+	        return defs;
+	    });
+	</script>
+{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'activities:index' %}">{% trans "Bébés" %}</a></li>
+<li class="breadcrumb-item active">{% trans "Données - Biberons" %}</li>
+{% endblock %}
+
+{% block title %}{% trans "Biberons" %}{% endblock %}
+
+{% block main %}
+{% if object_list %}
+<style>
+	#quarterly-sales .ct-series-a .ct-bar
+	{
+		stroke: url(#barGradient1);
+	}
+	#quarterly-sales .ct-series-a .ct-slice-pie
+	{
+	    fill: #fdb901;
+	}
+</style>
+{% for baby in babies %}
+	<div class="row">
+		<div class="col-xl-12 col-lg-12">
+			<section section id="baby-{{ baby.id }}" class="card">
+				<div class="card-header">
+			        <h4 class="card-title float-left">{{ baby.first_name }}</h4>
+					<a href="{% url 'activities:baby_update' baby.id %}">
+						<i class="ft-edit-2 primary lighten-2 float-left font-medium-4 ml-1"></i>
+					</a>
+			        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+		            <div class="heading-elements">
+			            <ul class="list-inline mb-0">
+			                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+			                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+			                <li><a data-action="close"><i class="ft-x"></i></a></li>
+			            </ul>
+		        	</div>
+			    </div>
+				<div class="card-body">
+                    <div id="quarterly-sales" class="height-300 BarChartShadow">
+					</div>
+                </div>
+	        </section>
+		</div>
+	</div>
+	<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-header p-1">
+                <h4 class="card-title float-left">{% trans "Statistiques" %} -
+					<span class="blue-grey lighten-2 font-small-3 mb-0">
+						{% trans "Du" %} {% with baby.diapers|first as first_bottle %}{{ first_bottle.datetime|date }}{% endwith %}
+						{% trans "au" %} {% with baby.diapers|last as last_bottle %}{{ last_bottle.datetime|date }}{% endwith %}
+					</span>
+				</h4>
+            </div>
+            <div class="card-content collapse show">
+                <div class="card-footer text-center p-1">
+                    <div class="row">
+                        <div class="col-md-4 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                            <p class="blue-grey lighten-2 mb-0">{% trans "Nombre moyen de couches par jour" %}</p>
+                            <p class="font-medium-5 text-bold-400">{{ baby.diapers_average|floatformat:"0" }}</p>
+                        </div>
+						<div class="col-md-4 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                            <p class="blue-grey lighten-2 mb-0">{% trans "Nombre de couches par mois" %}</p>
+                            <p class="font-medium-5 text-bold-400">{{ baby.diapers|length }}</p>
+                        </div>
+                        <div class="col-md-4 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                            <p class="blue-grey lighten-2 mb-0">{% trans "Pourcentage des biberons donnés" %}</p>
+                            <p class="font-medium-5 text-bold-400">
+								<div class="progress progress-sm mt-1 mb-0 box-shadow-2">
+                                    <div data-toggle="tooltip" data-popup="tooltip-custom" data-original-title="{{ baby.my_diapers_percentage }}%" class="progress-bar bg-gradient-x-warning" role="progressbar" style="width: {{ baby.my_diapers_percentage }}%" aria-valuenow="{{ baby.my_diapers_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+							</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <span class="text-muted"><a href="{% url 'activities:index' %}" class="warning darken-2">{{ baby.first_name }}</a> Statistics</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+{% endif %}
+{% endblock %}
