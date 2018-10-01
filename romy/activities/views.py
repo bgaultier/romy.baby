@@ -415,6 +415,7 @@ class DiaperAnalyticsView(generic.ListView):
                 'first_name':baby.first_name,
                 'id':baby.id,
                 'diapers':diapers,
+                'total_diapers':total_diapers,
                 'diapers_average': total_diapers/31,
                 'my_diapers_percentage': int(my_diapers*100/total_diapers),
             })
