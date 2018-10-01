@@ -358,6 +358,7 @@ class BottlesAnalyticsView(generic.ListView):
 
             bottles = []
             total_amount = 0
+            total_bottles = 0
             my_bottles = 0
             for d in range(31, -1, -1):
                 dt = timezone.now() - timedelta(days=d)
@@ -365,6 +366,8 @@ class BottlesAnalyticsView(generic.ListView):
                 amount = bottles_by_day.aggregate(Sum('quantity'))
                 if amount.get('quantity__sum'):
                     total_amount += amount.get('quantity__sum')
+                if bottles_by_day:
+                    total_bottles += bottles_by_day.count()
                 my_bottles += len(bottles_by_day.filter(parent=self.request.user))
                 bottles.append({'datetime':dt, 'amount': amount})
 
@@ -373,8 +376,8 @@ class BottlesAnalyticsView(generic.ListView):
                 'id':baby.id,
                 'bottles':bottles,
                 'bottles_average_quantity': total_amount/len(bottles),
-                'bottles_average': len(bottles)/31,
-                'my_bottles_percentage': int(my_bottles*100/len(bottles)),
+                'bottles_average': total_bottles/31,
+                'my_bottles_percentage': int(my_bottles*100/total_bottles),
             })
         context['babies'] = babies_list
 
@@ -397,11 +400,14 @@ class DiaperAnalyticsView(generic.ListView):
 
             diapers = []
             total_amount = 0
+            total_diapers = 0
             my_diapers = 0
             for d in range(31, -1, -1):
                 dt = timezone.now() - timedelta(days=d)
                 diapers_by_day = activities.filter(type__startswith='P', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
                 amount = len(diapers_by_day)
+                if diapers_by_day:
+                    total_diapers += amount
                 my_diapers += len(diapers_by_day.filter(parent=self.request.user))
                 diapers.append({'datetime':dt, 'amount': amount})
 
@@ -409,8 +415,8 @@ class DiaperAnalyticsView(generic.ListView):
                 'first_name':baby.first_name,
                 'id':baby.id,
                 'diapers':diapers,
-                'diapers_average': len(diapers)/31,
-                'my_diapers_percentage': int(my_diapers*100/len(diapers)),
+                'diapers_average': total_diapers/31,
+                'my_diapers_percentage': int(my_diapers*100/total_diapers),
             })
         context['babies'] = babies_list
 
