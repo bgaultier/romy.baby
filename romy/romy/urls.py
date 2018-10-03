@@ -20,7 +20,7 @@ from django.contrib.auth.decorators import login_required
 from .views import BetaUserCreateView, UserUpdateView
 
 urlpatterns = [
-    path('', BetaUserCreateView.as_view()),
+    path('', BetaUserCreateView.as_view(), name='coming_soon'),
     path('admin/', admin.site.urls),
     path('babies/', include('activities.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
