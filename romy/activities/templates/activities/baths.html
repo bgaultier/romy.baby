@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load humanize %}
+
+{% block analytics_active %} open{% endblock %}
+{% block baths_analytics_active %} class="active"{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static "vendors/css/calendars/fullcalendar.min.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/menu/menu-types/vertical-menu.min.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.min.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/plugins/calendars/fullcalendar.min.css" %}">
+{% endblock %}
+
+{% block scripts %}
+	<script src="{% static "vendors/js/extensions/moment.min.js" %}" type="text/javascript"></script>
+	<script src="{% static "vendors/js/extensions/fullcalendar.min.js" %}" type="text/javascript"></script>
+	<script src="{% static "vendors/js/extensions/locale-all.js" %}" type="text/javascript"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('#fc-default').fullCalendar({
+			header: {
+				left: 'title',
+				right: 'today prev,next'
+			},
+			defaultDate: '{% now "Y-m-d" %}',
+			locale: 'fr',
+			navLinks: true, // can click day/week names to navigate views
+			events: [
+				{% for day in babies.0.baths %}
+				{
+				  title: '{% trans "Bain à" %} {{ day|time }}',
+				  start: '{{ day|date:"Y-m-d" }}'
+				},
+				{% endfor %}
+			]
+		});
+	});
+	</script>
+{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'activities:index' %}">{% trans "Bébés" %}</a></li>
+<li class="breadcrumb-item active">{% trans "Données - Bains" %}</li>
+{% endblock %}
+
+{% block title %}{% trans "Bains" %}{% endblock %}
+
+{% block main %}
+{% if object_list %}
+{% for baby in babies %}
+<div class="row">
+	<div class="col-xl-12 col-lg-12">
+		<section section id="baby-{{ baby.id }}" class="card">
+			<div class="card-header">
+		        <h4 class="card-title float-left">{{ baby.first_name }}</h4>
+				<a href="{% url 'activities:baby_update' baby.id %}">
+					<i class="ft-edit-2 primary lighten-2 float-left font-medium-4 ml-1"></i>
+				</a>
+		        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+	            <div class="heading-elements">
+		            <ul class="list-inline mb-0">
+		                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+		                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+		                <li><a data-action="close"><i class="ft-x"></i></a></li>
+		            </ul>
+	        	</div>
+		    </div>
+			<div class="card-body">
+                <div id="fc-default" class="fc fc-unthemed"></div>
+            </div>
+        </section>
+	</div>
+</div>
+{% endfor %}
+{% else %}
+{% endif %}
+{% endblock %}

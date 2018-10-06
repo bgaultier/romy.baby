@@ -144,7 +144,7 @@
 			<div class="card-footer p-1">
 				<span class="badge badge-pill badge-danger">{% trans "Prochain biberon :" %} {{ baby.bottles.next|time }}</span>
 				<span class="float-right">
-					<a href="#" class="card-link danger">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
+					<a href="{% url 'activities:bottles_analytics' %}" class="card-link danger">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
 				</span>
             </div>
 			{% endif %}
@@ -177,7 +177,7 @@
 			<div class="card-footer p-1">
 				<span class="badge badge-pill badge-warning">{% trans "Dernier change :" %} {{ baby.diapers.last|time }}</span>
 				<span class="float-right">
-					<a href="#" class="card-link warning">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
+					<a href="{% url 'activities:diapers_analytics' %}" class="card-link warning">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
 				</span>
             </div>
 			{% endif %}
@@ -223,7 +223,7 @@
 			<div class="card-footer p-1">
 				<span class="badge badge-pill badge-info">{% trans "Dernier bain :" %} {{ baby.bath.last|naturalday }}</span>
 				<span class="float-right">
-					<a href="#" class="card-link info">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
+					<a href="{% url 'activities:baths_analytics' %}" class="card-link info">{% trans "Plus d'infos" %} <i class="ft-chevron-right"></i></a>
 				</span>
             </div>
 			{% endif %}

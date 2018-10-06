@@ -422,3 +422,34 @@ class DiaperAnalyticsView(generic.ListView):
         context['babies'] = babies_list
 
         return context
+
+class BathsAnalyticsView(generic.ListView):
+    model = Activity
+    template_name = 'activities/baths.html'
+
+    def get_queryset(self):
+        babies = Baby.objects.filter(parents=self.request.user)
+        return babies
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        babies = self.get_queryset()
+        babies_list = []
+        for baby in babies:
+            activities = Activity.objects.filter(baby=baby)
+
+            baths = []
+            for d in range(31, -1, -1):
+                dt = timezone.now() - timedelta(days=d)
+                baths_by_day = activities.filter(type='BATH', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
+                if baths_by_day:
+                    baths.append(baths_by_day.first().created_date)
+
+            babies_list.append({
+                'first_name':baby.first_name,
+                'id':baby.id,
+                'baths':baths,
+            })
+        context['babies'] = babies_list
+
+        return context

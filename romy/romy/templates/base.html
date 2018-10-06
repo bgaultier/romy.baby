@@ -81,8 +81,8 @@
 							<li{% block diapers_analytics_active %}{% endblock %}>
 								<a class="nav-link" href="{% url 'activities:diapers_analytics' %}"><span class="menu-title">{% trans "Couches" %}</span></a>
 							</li>
-							<li>
-								<a class="nav-link" href=""><span class="menu-title">{% trans "Bains" %}</span></a>
+							<li{% block baths_analytics_active %}{% endblock %}>
+								<a class="nav-link" href="{% url 'activities:baths_analytics' %}"><span class="menu-title">{% trans "Bains" %}</span></a>
 							</li>
 						</ul>
 					</li>
