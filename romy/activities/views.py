@@ -356,11 +356,21 @@ class BottlesAnalyticsView(generic.ListView):
         for baby in babies:
             activities = Activity.objects.filter(baby=baby)
 
-            bottles = []
+            last_month_bottles = []
+            last_2_weeks_bottles = []
             total_amount = 0
             total_bottles = 0
             my_bottles = 0
-            for d in range(31, -1, -1):
+            for d in range(31, 14, -1):
+                dt = timezone.now() - timedelta(days=d)
+                bottles_by_day = activities.filter(type='BOTTLE', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
+                amount = bottles_by_day.aggregate(Sum('quantity'))
+                last_month_bottles.append({'datetime':dt, 'amount': amount})
+
+            smart_bottles = 0
+            smart_bottle_amount = 0
+            smart_bottle_total_amount = 0
+            for d in range(14, -1, -1):
                 dt = timezone.now() - timedelta(days=d)
                 bottles_by_day = activities.filter(type='BOTTLE', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
                 amount = bottles_by_day.aggregate(Sum('quantity'))
@@ -369,14 +379,29 @@ class BottlesAnalyticsView(generic.ListView):
                 if bottles_by_day:
                     total_bottles += bottles_by_day.count()
                 my_bottles += len(bottles_by_day.filter(parent=self.request.user))
-                bottles.append({'datetime':dt, 'amount': amount})
+
+                bottles_within_2_hours = bottles_by_day.filter(created_date__hour__lt=timezone.now().hour+1, created_date__hour__gt=timezone.now().hour-1)
+                smart_bottle_amount = bottles_within_2_hours.aggregate(Sum('quantity'))
+                if smart_bottle_amount.get('quantity__sum'):
+                    smart_bottle_total_amount += smart_bottle_amount.get('quantity__sum')
+                    smart_bottles += 1
+
+                last_month_bottles.append({'datetime':dt, 'amount': amount})
+                last_2_weeks_bottles.append({'datetime':dt, 'amount': amount})
+
+            smart_bottle = 0
+            if smart_bottles > 0:
+                smart_bottle = smart_bottle_total_amount/smart_bottles + 30
+                smart_bottle = smart_bottle+30 - smart_bottle%30
 
             babies_list.append({
                 'first_name':baby.first_name,
                 'id':baby.id,
-                'bottles':bottles,
-                'bottles_average_quantity': total_amount/len(bottles),
-                'bottles_average': total_bottles/31,
+                'last_month_bottles': last_month_bottles,
+                'last_2_weeks_bottles': last_2_weeks_bottles,
+                'bottles_average_quantity': total_amount/len(last_2_weeks_bottles),
+                'bottles_average': total_bottles/15,
+                'smart_bottle': smart_bottle,
                 'my_bottles_percentage': int(my_bottles*100/total_bottles),
             })
         context['babies'] = babies_list
@@ -436,14 +461,7 @@ class BathsAnalyticsView(generic.ListView):
         babies = self.get_queryset()
         babies_list = []
         for baby in babies:
-            activities = Activity.objects.filter(baby=baby)
-
-            baths = []
-            for d in range(31, -1, -1):
-                dt = timezone.now() - timedelta(days=d)
-                baths_by_day = activities.filter(type='BATH', created_date__day=dt.day, created_date__month=dt.month, created_date__year=dt.year)
-                if baths_by_day:
-                    baths.append(baths_by_day.first().created_date)
+            baths = Activity.objects.filter(baby=baby, type='BATH')
 
             babies_list.append({
                 'first_name':baby.first_name,

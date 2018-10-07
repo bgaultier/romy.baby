@@ -29,10 +29,10 @@
 			locale: 'fr',
 			navLinks: true, // can click day/week names to navigate views
 			events: [
-				{% for day in babies.0.baths %}
+				{% for bath in babies.0.baths %}
 				{
-				  title: '{% trans "Bain à" %} {{ day|time }}',
-				  start: '{{ day|date:"Y-m-d" }}'
+				  title: '{% trans "Bain à" %} {{ bath.created_date|time }}',
+				  start: '{{ bath.created_date|date:"Y-m-d" }}'
 				},
 				{% endfor %}
 			]

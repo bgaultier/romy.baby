@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist-plugin-tooltip.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/core/menu/menu-types/vertical-menu.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.min.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/pages/dashboard-ecommerce.css" %}">
 {% endblock %}
 
@@ -20,9 +20,9 @@
 	<script src="{% static "vendors/js/charts/chartist-plugin-tooltip.min.js" %}" type="text/javascript"></script>
 	<script type="text/javascript">
 		var quarterlySales = new Chartist.Bar('#quarterly-sales', {
-			labels: [{% for day in babies.0.bottles %}'{{ day.datetime|date:"d/m"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+			labels: [{% for day in babies.0.last_month_bottles %}'{{ day.datetime|date:"d/m"|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
 			series: [
-				[{% for day in babies.0.bottles %}{{ day.amount.quantity__sum|default:0|floatformat:"0" }}{% if not forloop.last %},{% endif %}{% endfor %}]
+				[{% for day in babies.0.last_month_bottles %}{{ day.amount.quantity__sum|default:0|floatformat:"0" }}{% if not forloop.last %},{% endif %}{% endfor %}]
 			]
 	    }, {
 	            axisX: {
@@ -112,23 +112,27 @@
             <div class="card-header p-1">
                 <h4 class="card-title float-left">{% trans "Statistiques" %} -
 					<span class="blue-grey lighten-2 font-small-3 mb-0">
-						{% trans "Du" %} {% with baby.bottles|first as first_bottle %}{{ first_bottle.datetime|date }}{% endwith %}
-						{% trans "au" %} {% with baby.bottles|last as last_bottle %}{{ last_bottle.datetime|date }}{% endwith %}
+						{% trans "Du" %} {% with baby.last_2_weeks_bottles|first as first_bottle %}{{ first_bottle.datetime|date }}{% endwith %}
+						{% trans "au" %} {% with baby.last_2_weeks_bottles|last as last_bottle %}{{ last_bottle.datetime|date }}{% endwith %}
 					</span>
 				</h4>
             </div>
             <div class="card-content collapse show">
                 <div class="card-footer text-center p-1">
                     <div class="row">
-                        <div class="col-md-4 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+						<div class="col-md-3 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                            <p class="blue-grey lighten-2 mb-0">{% trans "Smart bibi" %} <i class="fas fa-info-circle"  data-toggle="tooltip" data-popup="tooltip-custom" data-original-title="{% trans "Quantité recommandée pour le prochain biberon" %}"></i></p>
+                            <p class="danger lighten-1 font-medium-5 text-bold-400">{{ baby.smart_bottle|floatformat:"0" }}ml</p>
+                        </div>
+                        <div class="col-md-3 col-12 border-right-blue-grey border-right-lighten-5 text-center">
                             <p class="blue-grey lighten-2 mb-0">{% trans "Quantité quotidienne moyenne" %}</p>
                             <p class="font-medium-5 text-bold-400">{{ baby.bottles_average_quantity|floatformat:"0" }}ml</p>
                         </div>
-                        <div class="col-md-4 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                        <div class="col-md-3 col-12 border-right-blue-grey border-right-lighten-5 text-center">
                             <p class="blue-grey lighten-2 mb-0">{% trans "Biberons quotidiens" %}</p>
                             <p class="font-medium-5 text-bold-400">{{ baby.bottles_average|floatformat:"0" }}</p>
                         </div>
-                        <div class="col-md-4 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                        <div class="col-md-3 col-12 border-right-blue-grey border-right-lighten-5 text-center">
                             <p class="blue-grey lighten-2 mb-0">{% trans "Pourcentage des biberons donnés" %}</p>
                             <p class="font-medium-5 text-bold-400">
 								<div class="progress progress-sm mt-1 mb-0 box-shadow-2">

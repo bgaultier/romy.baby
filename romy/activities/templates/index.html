@@ -104,7 +104,7 @@
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/core/menu/menu-types/vertical-menu.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.min.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "css/pages/dashboard-ecommerce.css" %}">
 {% endblock %}
 
@@ -190,7 +190,7 @@
 				<div class="float-right p-1">
 					<img src="{% static "img/bath.svg" %}" alt="{% trans "Bain" %}" height="28" />
                 </div>
-				<div class="ct-golden-section height-75 position-relative p-3 text-center">
+				<div class="ct-golden-section height-75 position-relative p-3 text-center d-none d-lg-block">
                     <div class="col">
                         <h2 class="display-4 info">{% if baby.bath.today %}oui{% else %}non{% endif %}</h2>
                     </div>
