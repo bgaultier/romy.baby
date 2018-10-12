@@ -33,8 +33,8 @@
 		        	</div>
 			    </div>
 	            <div class="card-content">
-						<button type="button" class="btn btn-bg-gradient-x-red-pink btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#bottleModal"><i class="fas fa-plus-circle"></i> {% trans "Biberon" %}</button>
-					<div class="modal fade" id="bottleModal" tabindex="-1" role="dialog" aria-labelledby="bottleModalLabel" aria-hidden="true">
+					<button type="button" class="btn btn-bg-gradient-x-red-pink btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#bottleModal-{{ baby.id }}"><i class="fas fa-plus-circle"></i> {% trans "Biberon" %}</button>
+					<div class="modal fade" id="bottleModal-{{ baby.id }}" tabindex="-1" role="dialog" aria-labelledby="bottleModalLabel" aria-hidden="true">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -46,7 +46,8 @@
 								<form method="post" action="{% url 'activities:bottle_create' %}">
 									<div class="modal-body">
 							            {% csrf_token %}
-						            	<div class="form-group">
+										<input type="hidden" name="baby_id" value="{{ baby.id }}">
+										<div class="form-group">
 											<label for="id_quantity">{% trans "Quantité" %}</label>
 											<input name="quantity" min="0" class="form-control" placeholder="70" title="Veuillez indiquer la quantité souhaitée" id="id_quantity" type="number">
 											<small class="form-text text-muted">{% trans "Veuillez indiquer la quantité de lait bue par bébé" %}</small>
@@ -68,8 +69,8 @@
 							</div>
 						</div>
 					</div>
-					<button type="button" class="btn btn-bg-gradient-x-orange-yellow btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#peeModal"><i class="fas fa-plus-circle"></i> {% trans "Pipi" %}</button>
-					<div class="modal fade" id="peeModal" tabindex="-1" role="dialog" aria-labelledby="peeModalLabel" aria-hidden="true">
+					<button type="button" class="btn btn-bg-gradient-x-orange-yellow btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#peeModal-{{ baby.id }}"><i class="fas fa-plus-circle"></i> {% trans "Pipi" %}</button>
+					<div class="modal fade" id="peeModal-{{ baby.id }}" tabindex="-1" role="dialog" aria-labelledby="peeModalLabel" aria-hidden="true">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -81,6 +82,7 @@
 								<form method="post" action="{% url 'activities:pee' %}">
 									<div class="modal-body">
 							            {% csrf_token %}
+										<input type="hidden" name="baby_id" value="{{ baby.id }}">
 										<div class="form-group">
 											<label for="id_comment">{% trans "Commentaire" %}</label>
 											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea>
@@ -98,8 +100,8 @@
 							</div>
 						</div>
 					</div>
-					<button type="button" class="btn btn-bg-gradient-x-purple-red btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#poohModal"><i class="fas fa-plus-circle"></i> {% trans "Caca" %}</button>
-					<div class="modal fade" id="poohModal" tabindex="-1" role="dialog" aria-labelledby="poohModalLabel" aria-hidden="true">
+					<button type="button" class="btn btn-bg-gradient-x-purple-red btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#poohModal-{{ baby.id }}"><i class="fas fa-plus-circle"></i> {% trans "Caca" %}</button>
+					<div class="modal fade" id="poohModal-{{ baby.id }}" tabindex="-1" role="dialog" aria-labelledby="poohModalLabel" aria-hidden="true">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -111,6 +113,7 @@
 								<form method="post" action="{% url 'activities:pooh' %}">
 									<div class="modal-body">
 							            {% csrf_token %}
+										<input type="hidden" name="baby_id" value="{{ baby.id }}">
 										<div class="form-group">
 											<label for="id_comment">{% trans "Commentaire" %}</label>
 											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea>
@@ -128,8 +131,8 @@
 							</div>
 						</div>
 					</div>
-					<button type="button" class="btn btn-bg-gradient-x-blue-green btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#bathModal"><i class="fas fa-plus-circle"></i> {% trans "Bain" %}</button>
-					<div class="modal fade" id="bathModal" tabindex="-1" role="dialog" aria-labelledby="bathModalLabel" aria-hidden="true">
+					<button type="button" class="btn btn-bg-gradient-x-blue-green btn-lg mb-1 mr-1 ml-1" data-toggle="modal" data-target="#bathModal-{{ baby.id }}"><i class="fas fa-plus-circle"></i> {% trans "Bain" %}</button>
+					<div class="modal fade" id="bathModal-{{ baby.id }}" tabindex="-1" role="dialog" aria-labelledby="bathModalLabel" aria-hidden="true">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -141,6 +144,7 @@
 								<form method="post" action="{% url 'activities:bath' %}">
 									<div class="modal-body">
 							            {% csrf_token %}
+										<input type="hidden" name="baby_id" value="{{ baby.id }}">
 										<div class="form-group">
 											<label for="id_comment">{% trans "Commentaire" %}</label>
 											<textarea name="comment" cols="40" rows="10" maxlength="1024" class="form-control" title="" id="id_comment"></textarea>

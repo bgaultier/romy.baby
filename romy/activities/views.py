@@ -107,7 +107,7 @@ class IndexView(generic.ListView):
         return context
 
 def generate_api_key(request, pk):
-    baby=get_object_or_404(Baby, parents=request.user,  pk=pk)
+    baby=get_object_or_404(Baby, parents=request.user, pk=pk)
     baby.generate_api_key()
     baby.save()
 
@@ -118,14 +118,19 @@ class BabyUpdateView(generic.UpdateView):
     success_url = reverse_lazy('activities:index')
     fields = ('first_name', 'feeding_period')
 
+    def get_queryset(self):
+        baby = get_object_or_404(Baby, pk=self.kwargs['pk'], parents=self.request.user)
+        queryset = super(BabyUpdateView, self).get_queryset()
+        return queryset.filter(id=baby.id)
+
 class ActivityDeleteView(generic.DeleteView):
     model = Activity
     success_url = reverse_lazy('activities:index')
 
     def get_queryset(self):
-        baby = get_object_or_404(Baby, parents=self.request.user)
-        qs = super(ActivityDeleteView, self).get_queryset()
-        return qs.filter(baby=baby)
+        baby = get_object_or_404(Baby, pk=self.kwargs['baby_id'], parents=self.request.user)
+        queryset = super(ActivityDeleteView, self).get_queryset()
+        return queryset.filter(baby=baby)
 
 class ActivitiesListView(generic.ListView):
     model = Activity
@@ -192,7 +197,7 @@ class BottleActivityCreateView(generic.CreateView):
     success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        baby = get_object_or_404(Baby, parents=self.request.user)
+        baby = get_object_or_404(Baby, pk=self.request.POST.get('baby_id'), parents=self.request.user)
         form.instance.baby = baby
         if not form.instance.created_date:
             form.instance.created_date = timezone.now()
@@ -205,10 +210,6 @@ class BottleActivityUpdateView(generic.UpdateView):
     fields = ('quantity', 'comment', 'created_date')
     success_url = reverse_lazy('activities:list')
 
-    def form_valid(self, form):
-        baby = get_object_or_404(Baby, parents=self.request.user)
-        return super().form_valid(form)
-
 class ActivityUpdateView(generic.UpdateView):
     model = Activity
     fields = ('comment', 'created_date')
@@ -220,7 +221,7 @@ class PeeActivityCreateView(generic.CreateView):
     success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        baby = get_object_or_404(Baby, parents=self.request.user)
+        baby = get_object_or_404(Baby, pk=self.request.POST.get('baby_id'), parents=self.request.user)
         form.instance.baby = baby
         if not form.instance.created_date:
             form.instance.created_date = timezone.now()
@@ -234,7 +235,7 @@ class PoohActivityCreateView(generic.CreateView):
     success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        baby = get_object_or_404(Baby, parents=self.request.user)
+        baby = get_object_or_404(Baby, pk=self.request.POST.get('baby_id'), parents=self.request.user)
         form.instance.baby = baby
         if not form.instance.created_date:
             form.instance.created_date = timezone.now()
@@ -248,7 +249,7 @@ class BathActivityCreateView(generic.CreateView):
     success_url = reverse_lazy('activities:list')
 
     def form_valid(self, form):
-        baby = get_object_or_404(Baby, parents=self.request.user)
+        baby = get_object_or_404(Baby, pk=self.request.POST.get('baby_id'), parents=self.request.user)
         form.instance.baby = baby
         if not form.instance.created_date:
             form.instance.created_date = timezone.now()
