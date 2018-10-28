@@ -300,8 +300,8 @@ def pee(request, pk):
     return JsonResponse({
         'baby':baby.first_name,
         'diapers': {
-            'today':diapers_today,
-            'night':night_diapers,
+            'today':diapers_today.count(),
+            'night':night_diapers.count(),
             'day':day_diapers,
             'last':last_diaper,
         }
@@ -325,8 +325,8 @@ def pooh(request, pk):
     return JsonResponse({
         'baby':baby.first_name,
         'diapers': {
-            'today':diapers_today,
-            'night':night_diapers,
+            'today':diapers_today.count(),
+            'night':night_diapers.count(),
             'day':day_diapers,
             'last':last_diaper,
         }
