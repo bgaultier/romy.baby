@@ -51,41 +51,23 @@
 					                    </div>
 					                </div>
 					                <div class="card-content">
-					                    <div class="text-center">
-											<div class="col-12">
-					                            <p class="card-text lead white text-justify">
-													{% blocktrans %}
-													Coucou,<br>
-													Nous sommes Baptiste et Ingrid et nous venons d’accueillir Romy.<br>
-													Romy notre bébé, que l’on va garder pour nous.<br>
-													Et <a href="/babies/" class="text-white text-bold-700">Romy.baby</a>, une interface web à destination des tout nouveaux parents que l’on veut bien partager :)<br><br>
-													<a href="/babies/" class="text-white text-bold-700">Romy.baby</a> sert à suivre les biberons, les couches, les bains, et à l’avenir tout ce qui permet à nos tous petits d’être en bonne santé.<br><br>
-													Vous êtes aussi jeune parent ? N’hésitez pas à nous demander une version d’essai, utilisez-là, testez-là, et faites nous vos retours et suggestions d’évolutions.<br><br>
-													Et comme nous voyons la parentalité comme un travail d’équipe, nous avons pensé cet outil comme étant utilisable par tous les membres de la famille.<br><br>
-													{% endblocktrans %}
-												</p>
-												{% if messages %}
-												{% for message in messages %}
-												<div class="alert alert-success alert-dismissible mb-2" role="alert">
-													<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-														<span aria-hidden="true">×</span>
-													</button>
-													{{ message }}
-												</div>
-												{% endfor %}
-												{% endif %}
-												<form method="post" class="white text-left">
-								                    {% csrf_token %}
-													<div class="form-group">
-														<input name="email" maxlength="254" class="form-control" placeholder="Adresse email" title="Veuillez saisir votre email" required="" id="id_email" type="email">
-														<small class="form-text">Veuillez saisir votre email pour vous inscrire à la beta</small>
+				                    <div class="text-center">
+															<div class="col-12">
+									                            <p class="card-text lead white text-justify">
+																	{% blocktrans %}
+																	Coucou,<br><br>
+																	Nous sommes Baptiste et Ingrid et nous venons d’accueillir Romy.<br>
+																	Romy notre bébé, que l’on va garder pour nous.<br>
+																	Et <a href="/babies/" class="text-white text-bold-700">Romy.baby</a>, une interface web à destination des tout nouveaux parents que l’on veut bien partager :)<br><br>
+																	<a href="/babies/" class="text-white text-bold-700">Romy.baby</a> sert à suivre les biberons, les couches, les bains, et à l’avenir tout ce qui permet à nos tous petits d’être en bonne santé.<br><br>
+																	Vous êtes aussi jeune parent ? Alors créez un compte en cliquant <a href="/signup/" class="text-white text-bold-700">ici</a> et faites nous vos retours et suggestions d’évolutions à <a href="mailto:hello@romy.baby?subject=feedback" class="text-white text-bold-700">hello@romy.baby</a>.<br><br>
+																	Et comme nous voyons la parentalité comme un travail d’équipe, nous avons pensé cet outil comme étant utilisable par tous les membres de la famille.<br><br>
+																	{% endblocktrans %}
+																</p>
+																<a href="/babies/" class="btn btn-lg btn-outline-white btn-block text-white">{% trans "Se connecter" %}</a>
+															</div>
+														</div>
 													</div>
-								                    <button type="submit" class="btn btn-outline-white">{% trans "S'inscrire" %}</button>
-								                </form>
-					                        </div>
-					                    </div>
-					                </div>
-					            </div>
 					        </div>
 					    </div>
 					</section>

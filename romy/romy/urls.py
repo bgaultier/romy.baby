@@ -16,11 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import TemplateView
+from django.views.generic.edit import CreateView
 
-from .views import BetaUserCreateView, UserUpdateView
+from .views import UserUpdateView
 
 urlpatterns = [
-    path('', BetaUserCreateView.as_view(), name='coming_soon'),
+    path('', TemplateView.as_view(template_name="coming-soon.html"), name='coming_soon'),
+    path('signup/', CreateView.as_view(template_name='registration/signup.html',
+                                       form_class=UserCreationForm,
+                                       success_url='/babies/'), name='signup'),
     path('admin/', admin.site.urls),
     path('babies/', include('activities.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
