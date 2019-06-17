@@ -26,6 +26,11 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         babies = Baby.objects.filter(parents=self.request.user)
+        if babies.count() < 1:
+            baby = Baby(first_name="Bébé")
+            baby.save()
+            baby.parents.add(self.request.user)
+            baby.save()
         return babies
 
     def get_context_data(self, **kwargs):
