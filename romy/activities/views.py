@@ -262,6 +262,34 @@ class BathActivityCreateView(generic.CreateView):
         form.instance.parent = self.request.user
         return super().form_valid(form)
 
+class BreastFeedingLeftActivityCreateView(generic.CreateView):
+    model = Activity
+    fields = ('comment', 'created_date')
+    success_url = reverse_lazy('activities:list')
+
+    def form_valid(self, form):
+        baby = get_object_or_404(Baby, pk=self.request.POST.get('baby_id'), parents=self.request.user)
+        form.instance.baby = baby
+        if not form.instance.created_date:
+            form.instance.created_date = timezone.now()
+        form.instance.type = 'BF_L'
+        form.instance.parent = self.request.user
+        return super().form_valid(form)
+
+class BreastFeedingRightActivityCreateView(generic.CreateView):
+    model = Activity
+    fields = ('comment', 'created_date')
+    success_url = reverse_lazy('activities:list')
+
+    def form_valid(self, form):
+        baby = get_object_or_404(Baby, pk=self.request.POST.get('baby_id'), parents=self.request.user)
+        form.instance.baby = baby
+        if not form.instance.created_date:
+            form.instance.created_date = timezone.now()
+        form.instance.type = 'BF_R'
+        form.instance.parent = self.request.user
+        return super().form_valid(form)
+
 @csrf_exempt
 def bottle(request, pk):
     baby = get_object_or_404(Baby, pk=pk, api_key=request.GET.get('key'))
@@ -409,6 +437,40 @@ class BottlesAnalyticsView(generic.ListView):
                 'bottles_average': total_bottles/15,
                 'smart_bottle': smart_bottle,
                 'my_bottles_percentage': int(my_bottles*100/total_bottles),
+            })
+        context['babies'] = babies_list
+
+        return context
+
+class BreastFeedingAnalyticsView(generic.ListView):
+    model = Activity
+    template_name = 'activities/breastfeeding.html'
+
+    def get_queryset(self):
+        babies = Baby.objects.filter(parents=self.request.user)
+        return babies
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        babies = self.get_queryset()
+        babies_list = []
+        for baby in babies:
+            activities = Activity.objects.filter(baby=baby)
+
+            last_month = timezone.now() - timedelta(days=30)
+            last_month_left_feedings = activities.filter(type='BF_L', created_date__gt=last_month).count()
+            last_month_right_feedings = activities.filter(type='BF_R', created_date__gt=last_month).count()
+
+            today_left_feedings = activities.filter(type='BF_L', created_date__gt=timezone.now().replace(hour=0, minute=0)).count()
+            today_right_feedings = activities.filter(type='BF_L', created_date__gt=timezone.now().replace(hour=0, minute=0)).count()
+
+            babies_list.append({
+                'first_name':baby.first_name,
+                'id':baby.id,
+                'last_month_left_feedings': last_month_left_feedings,
+                'last_month_right_feedings': last_month_right_feedings,
+                'today_left_feedings': today_left_feedings,
+                'today_right_feedings': today_right_feedings,
             })
         context['babies'] = babies_list
 

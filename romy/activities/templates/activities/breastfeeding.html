@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load humanize %}
+
+{% block analytics_active %} open{% endblock %}
+{% block breastfeeding_analytics_active %} class="active"{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "vendors/css/charts/chartist-plugin-tooltip.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/menu/menu-types/vertical-menu.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/core/colors/palette-gradient.min.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/pages/dashboard-ecommerce.css" %}">
+<style>
+	.ct-series-a .ct-slice-pie
+	{
+	    fill: rgb(128, 126, 213);
+	}
+	.ct-series-b .ct-slice-pie
+	{
+	    fill: rgba(128, 126, 213, 0.5);
+	}
+
+	.ct-label {
+		fill: rgba(255,255,255,.8);
+		font-size: 1em;
+		font-weight: bold;
+	}
+</style>
+{% endblock %}
+
+{% block scripts %}
+	<script src="{% static "vendors/js/charts/chartist.min.js" %}" type="text/javascript"></script>
+	<script src="{% static "vendors/js/charts/chartist-plugin-tooltip.min.js" %}" type="text/javascript"></script>
+	{% for baby in babies %}
+	<script type="text/javascript">
+		$(window).on("load", function(){
+			var data = {
+				labels: ["{% trans "Sein gauche : " %}{{ baby.last_month_left_feedings }}", "{% trans "Sein droit : " %}{{ baby.last_month_right_feedings }}"],
+				series: [{{ baby.last_month_left_feedings }}, {{ baby.last_month_right_feedings }}]
+			};
+
+			var sum = function(a, b) {
+				return a + b;
+			};
+
+			new Chartist.Pie('#pie-chart-{{ baby.id }}', data);
+		});
+	</script>
+	{% endfor %}
+{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'activities:index' %}">{% trans "Bébés" %}</a></li>
+<li class="breadcrumb-item active">{% trans "Données - Allaitement" %}</li>
+{% endblock %}
+
+{% block title %}{% trans "Allaitement" %}{% endblock %}
+
+{% block main %}
+{% if object_list %}
+{% for baby in babies %}
+	<div class="row">
+		<div class="col-xl-12 col-lg-12">
+			<section section id="baby-{{ baby.id }}" class="card">
+				<div class="card-header">
+			        <h4 class="card-title float-left">{{ baby.first_name }}</h4>
+					<a href="{% url 'activities:baby_update' baby.id %}">
+						<i class="ft-edit-2 primary lighten-2 float-left font-medium-4 ml-1"></i>
+					</a>
+			        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+		            <div class="heading-elements">
+			            <ul class="list-inline mb-0">
+			                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+			                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+			                <li><a data-action="close"><i class="ft-x"></i></a></li>
+			            </ul>
+		        	</div>
+			    </div>
+				<div class="card-body">
+					<div id="pie-chart-{{ baby.id }}" class="height-300"></div>
+					<h6 class="card-subtitle text-center text-muted m-1">{% trans "Statistiques sur le mois" %}</h6>
+				</div>
+			</section>
+		</div>
+	</div>
+	<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-header p-1">
+                <h4 class="card-title float-left">{% trans "Statistiques" %}</h4>
+            </div>
+            <div class="card-content collapse show">
+                <div class="card-footer text-center p-1">
+                    <div class="row">
+											<div class="col-md-6 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+                        <p class="blue-grey lighten-2 mb-0">{% trans "Aujourd'hui" %}</p>
+                        <p class="text-bold-400">{% trans "Sein gauche : " %}{{ baby.today_left_feedings }} / {% trans "Sein droit : " %}{{ baby.today_right_feedings }}</p>
+                      </div>
+											<div class="col-md-6 col-12 border-right-blue-grey border-right-lighten-5 text-center">
+												<p class="blue-grey lighten-2 mb-0">{% trans "Par mois" %}</p>
+												<p class="text-bold-400">{% trans "Sein gauche : " %}{{ baby.last_month_left_feedings }} / {% trans "Sein droit : " %}{{ baby.last_month_right_feedings }}</p>
+											</div>
+                    </div>
+                    <hr>
+                    <span class="text-muted"><a href="{% url 'activities:index' %}" class="primary darken-2">{{ baby.first_name }}</a> Statistics</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+{% endif %}
+{% endblock %}

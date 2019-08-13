@@ -25,7 +25,9 @@
                         {% if activity.type == 'BOTTLE' %}<img src="{% static "img/bottle.svg" %}" alt="{% trans "Biberon" %}" height="28" />{% elif activity.type == 'BATH' %}
                         <img src="{% static "img/bath.svg" %}" alt="{% trans "Bain" %}" height="26" />{% elif activity.type == 'PEE' %}
                         <img src="{% static "img/diaper.svg" %}" alt="{% trans "Couche" %}" height="22" />{% elif activity.type == 'POOH' %}
-                        <img src="{% static "img/pooh.svg" %}" alt="{% trans "Couche" %}" height="22" />{% endif %}
+                        <img src="{% static "img/pooh.svg" %}" alt="{% trans "Couche" %}" height="22" />{% elif activity.type == 'BF_L' %}
+                        <img src="{% static "img/br_l.svg" %}" alt="{% trans "Sein gauche" %}" height="16" style="margin-top:8px" />{% elif activity.type == 'BF_R' %}
+                        <img src="{% static "img/br_r.svg" %}" alt="{% trans "Sein droit" %}" height="16" style="margin-top:8px" />{% endif %}
                     </td>
                     <td class="align-middle">{{ activity.comment }}</td>
                     <td class="align-middle">{% if activity.quantity %}{{ activity.quantity }}{% trans "ml" %}{% endif %}</td>

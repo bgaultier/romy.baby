@@ -44,6 +44,8 @@ class Activity(models.Model):
         ('PEE', _(u'Pipi')),
         ('POOH', _(u'Popo')),
         ('SLEEP', _(u'Dodo')),
+        ('BF_L', _(u'Sein gauche')),
+        ('BF_R', _(u'Sein droit')),
     )
     type = models.CharField(max_length=6, help_text=_("Veuillez indiquer le type de l'activité"), choices=EVENT_TYPES)
     quantity = models.PositiveSmallIntegerField(_("Quantité"), help_text=_("Veuillez indiquer la quantité de lait bu par bébé"), default=None, null=True, blank=True)

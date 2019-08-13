@@ -78,6 +78,9 @@
 							<li{% block bottles_analytics_active %}{% endblock %}>
 								<a class="nav-link" href="{% url 'activities:bottles_analytics' %}"><span class="menu-title">{% trans "Biberons" %}</span></a>
 							</li>
+							<li{% block breastfeeding_analytics_active %}{% endblock %}>
+								<a class="nav-link" href="{% url 'activities:breastfeeding_analytics' %}"><span class="menu-title">{% trans "Allaitement" %}</span></a>
+							</li>
 							<li{% block diapers_analytics_active %}{% endblock %}>
 								<a class="nav-link" href="{% url 'activities:diapers_analytics' %}"><span class="menu-title">{% trans "Couches" %}</span></a>
 							</li>
